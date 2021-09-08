@@ -41,7 +41,7 @@
 					<c:forEach items="${list }" var="board">
 						<tr>
 							<td><c:out value="${board.bno }" /></td>
-							<td><a href='/board/get?bno=<c:out value="${board.bno }"/>'><c:out value="${board.title }" /></a></td>
+							<td><a class="move" href='<c:out value="${board.bno }"/>'><c:out value="${board.title }" /></a></td>
 							<td><c:out value="${board.writer }" /></td>
 							<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"
 									value="${board.regdate }" /></td>
@@ -51,8 +51,39 @@
 						</tr>
 					</c:forEach>
 				</table>
-
-				<!-- Modal 추가 -->
+				
+				<!-- 페이징 쿼리 파라미터 값 -->
+				<form action="/board/list" id="actionForm" method="get">
+					<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+					<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
+				</form>
+				
+				<!-- 페이징 처리 -->
+				<div class="pull-right">
+					<ul class="pagination">
+					
+						<c:if test="${pageMaker.prev }">
+							<li class="paginate_button previous">
+								<a href="${pageMaker.startPage - 1 }">이전</a>
+							</li>
+						</c:if>
+						
+						<c:forEach var="num" begin="${pageMaker.startPage }" end="${pageMaker.endPage }"> 
+							<li class="paginate_button ${pageMaker.cri.pageNum == num ? "active":"" }">
+								<a href="${num }">${num }</a>
+							</li>
+						</c:forEach>
+						
+						<c:if test="${pageMaker.next }">
+							<li class="paginate_button next">
+								<a href="${pageMaker.endPage + 1 }">다음</a>
+							</li>
+						</c:if>
+						
+					</ul>
+				</div>
+				
+				<!-- 모달창 추가 -->
 				<div class="modal fade" id="myModal" tabindex="1" role="dialog"
 					aria-labelledby="myModalLabel" aria-hidden="true">
 					
@@ -75,7 +106,7 @@
 						</div>
 					</div>
 				</div>
-				<!-- /.modal -->
+				
 				
 			</div>
 		</div>
@@ -86,6 +117,8 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+	
+	// 모달창 이벤트
 	var result='<c:out value="${result}"/>';
 	
 	checkModal(result);
@@ -102,5 +135,27 @@ $(document).ready(function(){
 		}
 		$("#myModal").modal("show");
 	}
+	
+	// 페이지 번호 클릭 이벤트
+	
+	var actionForm=$("#actionForm")
+	
+	$(".paginate_button a").on("click", function(e){
+		e.preventDefault();
+		
+		console.log('click');
+		
+		actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+		actionForm.submit();
+	});
+	
+	// 게시물 조회 이벤트
+	$(".move").on("click", function(e){
+		e.preventDefault();
+		
+		actionForm.append("<input type='hidden' name='bno' value='"+$(this).attr("href")+"'>");
+		actionForm.attr("action", "/board/get");
+		actionForm.submit();
+	});
 });
 </script>

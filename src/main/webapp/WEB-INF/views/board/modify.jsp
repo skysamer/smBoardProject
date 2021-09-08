@@ -24,6 +24,9 @@
 				
 					<form action="/board/modify" role="form" method="post">
 					
+						<input type="hidden" name="pageNum" value="<c:out value="${cri.pageNum }"/>">
+						<input type="hidden" name="amount" value="<c:out value="${cri.amount }"/>">
+					
 						<div class="form-group">
 							<label>글번호</label> <input class="form-control" name='bno' value='<c:out value="${board.bno }"/>' readonly="readonly"/>
 						</div>
@@ -69,14 +72,16 @@ $(document).ready(function(){
 		
 		console.log(operation);
 		
-		if(operation==='remove'){
-			formObj.attr("action", "/board/remove");
-		}else if(operation==='list'){
+		// 목록으로
+		if(operation==='list'){
 			formObj.attr("action", "/board/list").attr("method", "get");
+			var pageNumTag=$("input[name='pageNum']").clone();
+			var amountTag=$("input[name='amount']").clone();
+			
 			formObj.empty();
-			return;
+			formObj.append(pageNumTag);
+			formObj.append(amountTag);
 		}
-		
 		formObj.submit();
 	});
 });

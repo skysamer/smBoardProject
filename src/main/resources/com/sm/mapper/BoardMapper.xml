@@ -12,6 +12,21 @@
 		]]>
 	</select>
 	
+	<select id="getListWithPaging" resultType="com.sm.domain.BoardVO">
+		<![CDATA[
+			select
+			bno, title, content, writer, regdate, views, recommendations, not_recommendations
+			from
+				(
+				select /*+INDEX_DESC(tbl_board pk_board) */
+				rownum as rn, bno, title, content, writer, regdate, views, recommendations, not_recommendations
+				from tbl_board 
+				where rownum <= #{pageNum} * #{amount}
+				)
+			where rn > (#{pageNum} - 1) * #{amount}
+		]]>
+	</select>
+	
 	<insert id="insert">
 		insert into tbl_board (bno, title, content, writer) 
 		values (seq_board.naxtval, #{title}, #{content}, #{writer})

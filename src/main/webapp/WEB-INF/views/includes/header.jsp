@@ -53,7 +53,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">커뮤니티 게시판</a>
+                <a class="navbar-brand" href="">커뮤니티 게시판</a>
             </div>
             <!-- /.navbar-header -->
 

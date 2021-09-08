@@ -11,9 +11,7 @@
 			<c:out value="${board.title }" />
 		</h1>
 	</div>
-	<!-- /.col-lg-12 -->
 </div>
-<!-- /.row -->
 
 <div class="row">
 	<div class="col-lg-12">
@@ -22,7 +20,6 @@
 			<div class="panel-heading">
 				<label>작성자: </label> <c:out value="${board.writer }" />
 			</div>
-			<!-- /.panel-heading -->
 
 			<div class="panel-body">
 				<div class="form-group">
@@ -31,13 +28,15 @@
 				
 				<button data-oper="modify" class="btn btn-default" onclick="location.href='/board/modify?bno='<c:out value="${board.bno }"/>'">수정</button>
 				<button id="btnDelModal" data-oper="removeModal" class="btn btn-danger">삭제</button>
-				<button data-oper="list" class="btn btn-info" onclick="location.href='/board/list'">목록으로</button>
+				<button data-oper="list" class="btn btn-info" >목록으로</button>
 				
 				<form id="operForm" action="/board/modify" method="get">
 					<input type="hidden" id="bno" name="bno" value="<c:out value="${board.bno }"/>">
+					<input type="hidden" name="pageNum" value="<c:out value="${cri.pageNum }"/>">
+					<input type="hidden" name="amount" value="<c:out value="${cri.amount }"/>">
 				</form>
 				
-				<!-- Modal 추가 -->
+				<!-- 모달창 추가 -->
 				<div class="modal fade" id="myModal" tabindex="1" role="dialog"
 					aria-labelledby="myModalLabel" aria-hidden="true">
 					
@@ -60,7 +59,6 @@
 						</div>
 					</div>
 				</div>
-				<!-- /.modal -->
 				
 			</div>
 
@@ -89,12 +87,12 @@ $(document).ready(function(){
 	
 	$("button[data-oper='list']").on("click", function(e){
 		operForm.find("#bno").remove();
-		operForm.attr("action", "/board/list").submit();
+		operForm.attr("action", "/board/list")
+		operForm.submit();
 	});
 	
+	
 	/* modal */
-	
-	
 	$("button[data-oper='removeModal']").on("click", function(e){
 		$("#myModal").modal("show");
 	});
