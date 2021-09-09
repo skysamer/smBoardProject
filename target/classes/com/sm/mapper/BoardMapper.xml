@@ -3,14 +3,6 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.sm.mapper.BoardMapper">
-
-	<select id="getBoardList" resultType="com.sm.domain.BoardVO">
-		<![CDATA[
-			select * from tbl_board 
-			where bno>0 
-			order by bno desc
-		]]>
-	</select>
 	
 	<select id="getListWithPaging" resultType="com.sm.domain.BoardVO">
 		<![CDATA[
@@ -56,5 +48,11 @@
 		writer=#{writer}
 		where bno=#{bno}
 	</update>
+	
+	<select id="getTotalCount" resultType="int">
+		<![CDATA[
+			select count(*) from tbl_board where bno>0
+		]]>
+	</select>
 
 </mapper>
