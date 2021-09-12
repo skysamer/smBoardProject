@@ -62,6 +62,7 @@
 					</div>
 				</div>
 				
+				
 			</div>
 
 		</div>
@@ -70,11 +71,131 @@
 
 </div>
 
+<!-- ´ñ±Û -->
+<div class="row">
+	<div class="col-lg-12">
+		
+		<!-- ÆÇ³Ú -->
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<i class="fa fa-comments fa-fw"></i> ÀüÃ¼ ´ñ±Û
+			</div>
+		</div>
+		
+		<div class="panel-body">
+			<ul class="chat">
+				<!-- ´ñ±Û ½ÃÀÛ -->
+				<li class="left clearfix" data-rno='12'>
+					<div>
+						<div class="header">
+							<strong class="primary-font">user00</strong>
+							<small class="pull-right text-muted">2021-09-12 23:04</small>
+						</div>
+						<p>Good Job !</p>
+					</div>
+				</li>
+				
+			</ul>
+		</div>
+		
+		
+	</div>
+</div>
+
 
 <%@ include file="../includes/footer.jsp"%>
 
+<script type="text/javascript" src="/resources/js/reply.js"></script>
+
+<script>
+
+$(document).ready(function(){
+	
+	var bnoValue='<c:out value="${board.bno}"/>';
+	var replyUL=$(".chat");
+	
+	showList(1);
+	
+	function showList(page){
+		replyService.getList({bno:bnoValue, page:page||1}, function(list){
+			
+			var str="";
+			
+			if(list == null || list.length == 0){
+				ReplyUL.html("");
+				
+				return;
+			}
+			
+			for(var i=0, len=list.length || 0; i<len; i++){
+				str+="<li class='left clearfix' data-rno='"+list[i].rno+"'>";
+				str+=" <div><div class='header'><strong class='primary-font'>"+list[i].replier+"</strong>";
+				str+="<small class='pull-right text-muted'>"+list[i].replyDate+"</small></div>";
+				str+="<p>"+list[i].reply+"</p></div></li>";
+			}
+			
+			replyUL.html(str);
+		});
+	}
+});
+</script>
+
+<script>
+console.log("===============");
+console.log("JS TEST");
+
+var bnoValue='<c:out value="${board.bno}"/>';
+
+// ´ñ±Û µî·Ï
+replyService.add(
+		{reply:"JS Test", replier:"tester", bno:bnoValue}
+		,
+		function(result){
+			alert("RESULT: "+result);
+		}
+);
+
+// ´ñ±Û ¸®½ºÆ®
+replyService.getList({bno:bnoValue, page:1}, function(list){
+	
+	for(var i=0, len=list.length||0; i<len; i++){
+		console.log(list[i]);
+	}
+	
+});
+
+// 23¹ø ´ñ±Û »èÁ¦
+repltService.remove(23, function(count){
+	console.log(count);
+	
+	if(count === "success"){
+		alert("REMOVED");
+	}
+}, function(err){
+	alert('ERROR...');
+})
+
+// 22¹ø ´ñ±Û ¼öÁ¤
+replyService.update({
+	rno: 22,
+	bno : bnoValue,
+	reply : "Modified Reply....."
+}, function(result){
+	alert("¼öÁ¤ ¿Ï·á...")
+});
+
+// ´ñ±Û »ó¼¼º¸±â
+replyService.get(10, function(data){
+	console.log(data);
+})
+	
+</script>
+
+
 <script type="text/javascript">
 $(document).ready(function(){
+	
+	console.log(replyService);
 	
 	/* data-oper */
 	var operForm=$("#operForm");
