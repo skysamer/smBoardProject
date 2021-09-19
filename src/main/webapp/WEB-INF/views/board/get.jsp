@@ -85,15 +85,15 @@
 		
 		<div class="panel-body">
 			<ul class="chat">
-				<!-- <li class="left clearfix" data-rno='12'>
+				<li class="left clearfix">
 					<div>
 						<div class="header">
-							<strong class="primary-font">user00</strong>
-							<small class="pull-right text-muted">2021-09-12 23:04</small>
+							<strong class="primary-font"></strong>
+							<small class="pull-right text-muted"></small>
 						</div>
-						<p>Good Job !</p>
+						<p></p>
 					</div>
-				</li> -->
+				</li> 
 				
 			</ul>
 		</div>
@@ -103,7 +103,7 @@
 </div>
 
 <!-- ´ñ±Û ¸ð´ÞÃ¢ -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModalReply" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 		
@@ -150,8 +150,70 @@ $(document).ready(function(){
 	var bnoValue='<c:out value="${board.bno}"/>';
 	var replyUL=$(".chat");
 	
+	// ´ñ±Û ¸ð´ÞÃ¢
+	var modal=$("#myModalReply");
+	var modalInputReply=modal.find("input[name='reply']");
+	var modalInputReplier=modal.find("input[name='replier']");
+	var modalInputReplyDate=modal.find("input[name='replyDate']");
+	
+	var modalModBtn=$("#modalModBtn");
+	var modalRemoveBtn=$("#modalRemoveBtn");
+	var modalRegisterBtn=$("#modalRegisterBtn");
+	
+	$("#addReplyBtn").on("click", function(e){
+		modal.find("input").val("");
+		modalInputReplyDate.closest("div").hide();
+		modal.find("button[id != 'modalCloseBtn']").hide();
+		
+		modalRegisterBtn.show();
+		
+		$("#myModalReply").modal("show");
+	});
+	
+	// ´ñ±Û »ó¼¼º¸±â
+	$(".chat").on("click", "li", function(e){
+		var rno=$(this).data("rno");
+		
+		replyService.get(rno, function(reply){
+			modalInputReply.val(reply.reply);
+			modalInputReplier.val(reply.replier);
+			modalInputReplyDate.val(replyService.displayTime(reply.replyDate)).attr("readonly", "readonly");
+			modal.data("rno", reply.rno);
+			
+			modal.find("button[id != 'modalCloseBtn']").hide();
+			modalModBtn.show();
+			modalRemoveBtn.show();
+			
+			$("#myModalReply").modal("show");
+		});
+	});
+	
+	
+	// ´ñ±Û ¼öÁ¤
+	modalModBtn.on("click", function(e){
+		var reply={rno : modal.data("rno"), reply : modalInputReply.val()};
+		
+		replyService.update(reply, function(result){
+			alert(result);
+			modal.modal("hide");
+			showList(1);
+		});
+	});
+	
+	// ´ñ±Û »èÁ¦
+	modalRemoveBtn.on("click", function(e){
+		var rno=modal.data("rno");
+		
+		replyService.remove(rno, function(result){
+			alert(result);
+			modal.modal("hide");
+			showList(1);
+		});
+	});
+	
 	showList(1);
 	
+	// ´ñ±Û ¸ñ·Ï
 	function showList(page){
 		replyService.getList({bno:bnoValue, page:page||1}, function(list){
 			
@@ -174,24 +236,21 @@ $(document).ready(function(){
 		});
 	}
 	
-	// ´ñ±Û ¸ð´ÞÃ¢
-	var modal=$(".modal");
-	var modalInputReply=modal.find("input[name='reply']");
-	var modalInputReplier=modal.find("input[name='replier']");
-	var modalInputReplyDate=modal.find(".input[name='replyDate']");
-	
-	var modalModBtn=$("#modalModBtn");
-	var modalRemoveBtn=$("#modalRemoveBtn");
-	var modalRegisterBtn=$("#modalRegisterBtn");
-	
-	$("#addReplyBtn").on("click", function(e){
-		modal.find("input").val("");
-		modalInputReplyDate.closest("div").hide();
-		modal.find("button[id != 'modalCloseBtn']").hide();
-		
-		modalRegisterBtn.show();
-		
-		$(".modal").modal("show");
+	// ´ñ±Û µî·Ï
+	modalRegisterBtn.on("click", function(e){
+		var reply={
+				reply : modalInputReply.val(),
+				replier : modalInputReplier.val(),
+				bno : bnoValue
+		};
+		replyService.add(reply, function(result){
+			alert(result);
+			
+			modal.find("input").val("");
+			modal.modal("hide");
+			
+			showList(1);
+		});
 		
 	});
 });
@@ -207,6 +266,7 @@ $(document).ready(function(){
 	
 	/* data-oper */
 	var operForm=$("#operForm");
+	
 	
 	$("button[data-oper='modify']").on("click", function(e){
 		operForm.attr("action", "/board/modify").submit();
