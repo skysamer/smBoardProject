@@ -22,10 +22,23 @@
 	</update>
 	
 	<select id="getListWithPaging" resultType="com.sm.domain.ReplyVO">
-		select rno, bno, reply, replier, replyDate
-		from tbl_reply
-		where bno=#{bno}
-		order by rno asc
+		<![CDATA[
+			select rno, bno, reply, replier, replyDate
+			from
+			    (
+			    select /*+index(tbl_reply idx_reply)*/
+			    rownum rn, bno, rno, reply, replier, replyDate
+			    from tbl_reply
+			    where bno=#{bno} and rno > 0 and rownum <= #{cri.pageNum}*#{cri.amount}
+			    )
+			where rn > (#{cri.pageNum} - 1)*#{cri.amount}
+		]]>
+	</select>
+	
+	<select id="getCountByBno" resultType="int">
+		<![CDATA[
+			select count(rno) from tbl_reply where bno = #{bno}
+		]]>
 	</select>
 
 </mapper>

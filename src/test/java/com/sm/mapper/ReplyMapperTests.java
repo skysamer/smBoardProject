@@ -30,14 +30,13 @@ public class ReplyMapperTests {
 	 * mapper.insert(vo); }); }
 	 */
 	
-	@Test
-	public void testRead() {
-		Long targetRno=5L;
-		
-		ReplyVO vo=mapper.read(targetRno);
-		
-		log.info(vo);
-	}
+	/*
+	 * @Test public void testRead() { Long targetRno=5L;
+	 * 
+	 * ReplyVO vo=mapper.read(targetRno);
+	 * 
+	 * log.info(vo); }
+	 */
 	
 	/*
 	 * @Test public void testDelete() { Long targetRno=1L;
@@ -45,31 +44,33 @@ public class ReplyMapperTests {
 	 * mapper.delete(targetRno); }
 	 */
 	
-	@Test
-	public void testUpdate() {
-		Long targetRno=10L;
-		
-		ReplyVO vo=mapper.read(targetRno);
-		
-		vo.setReply("Update Reply ");
-		
-		int count=mapper.update(vo);
-		
-		log.info("UPDATE COUNT: "+count);
-	}
+	/*
+	 * @Test public void testUpdate() { Long targetRno=10L;
+	 * 
+	 * ReplyVO vo=mapper.read(targetRno);
+	 * 
+	 * vo.setReply("Update Reply ");
+	 * 
+	 * int count=mapper.update(vo);
+	 * 
+	 * log.info("UPDATE COUNT: "+count); }
+	 * 
+	 * @Test public void testList() { Criteria cri=new Criteria();
+	 * 
+	 * List<ReplyVO> replies=mapper.getListWithPaging(cri, bnoArr[0]);
+	 * 
+	 * replies.forEach(reply -> log.info(reply)); }
+	 * 
+	 * @Test public void testMapper() { log.info(mapper); }
+	 */
 	
 	@Test
-	public void testList() {
-		Criteria cri=new Criteria();
+	public void testList2() {
+		Criteria cri=new Criteria(2, 10);
 		
-		List<ReplyVO> replies=mapper.getListWithPaging(cri, bnoArr[0]);
-		
+		// 1703967
+		List<ReplyVO> replies=mapper.getListWithPaging(cri, 1703967L);
 		replies.forEach(reply -> log.info(reply));
-	}
-	
-	@Test
-	public void testMapper() {
-		log.info(mapper);
 	}
 
 }

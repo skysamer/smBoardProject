@@ -1,7 +1,5 @@
 package com.sm.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.sm.domain.Criteria;
+import com.sm.domain.ReplyPageDTO;
 import com.sm.domain.ReplyVO;
 import com.sm.service.ReplyService;
 import lombok.AllArgsConstructor;
@@ -43,13 +42,15 @@ public class ReplyController {
 	}
 	
 	@GetMapping(value="/pages/{bno}/{page}", produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<List<ReplyVO>> getList(@PathVariable("page") int page, @PathVariable("bno") Long bno){
-		log.info("getList......");
+	public ResponseEntity<ReplyPageDTO> getList(@PathVariable("page") int page, @PathVariable("bno") Long bno){
 		
 		Criteria cri=new Criteria(page, 10);
-		log.info(cri);
 		
-		return new ResponseEntity<List<ReplyVO>>(service.getList(bno, cri), HttpStatus.OK);
+		log.info("get Reply List bno: "+bno);
+		
+		log.info("cri: "+cri);
+		
+		return new ResponseEntity<ReplyPageDTO>(service.getListPage(cri, bno), HttpStatus.OK);
 	}
 	
 	@GetMapping(value="/{rno}", produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
