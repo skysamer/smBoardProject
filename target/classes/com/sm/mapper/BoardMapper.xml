@@ -27,11 +27,11 @@
 	<select id="getListWithPaging" resultType="com.sm.domain.BoardVO">
 		<![CDATA[
 			select
-			bno, title, content, writer, regdate, views, recommendations, not_recommendations
+			bno, title, content, writer, regdate, views, recommendations, not_recommendations, replyCnt
 			from
 				(
 				select /*+INDEX_DESC(tbl_board pk_board) */
-				rownum as rn, bno, title, content, writer, regdate, views, recommendations, not_recommendations
+				rownum as rn, bno, title, content, writer, regdate, views, recommendations, not_recommendations, replyCnt
 				from tbl_board 
 				where 
 		]]>
@@ -86,5 +86,9 @@
 			bno>0
 		]]>
 	</select>
+	
+	<update id="updateReplyCnt">
+		update tbl_board set replyCnt=replyCnt + #{amount} where bno = #{bno}
+	</update>
 
 </mapper>

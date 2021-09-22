@@ -13,5 +13,7 @@ public class BoardVO {
 	private Long views;
 	private Long recommendations;
 	private Long not_recommendations;
+	
+	private int replyCnt;
 
 }
