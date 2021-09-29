@@ -2,29 +2,30 @@
 	pageEncoding="EUC-KR"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<style>
-.uploadResult{
-	width:100%;
-	background-color:gray;
-}
-
-.uploadResult ul{
-	display:flex;
-	flex-flow:row;
-	justify-content:center;
-	align-items:center;
-}
-
-.uploadResult ul li{
-	list-style:none;
-	padding:10px;
-}
-
-.uploadResult ul li img{
-	width:20px;
-}
-</style>
 <%@include file="../includes/header.jsp"%>
+
+<style>
+	.uploadResult{
+		width: 100%;
+		background-color: gray;
+	}
+	
+	.uploadResult ul{
+		display: flex;
+		flex-flow: row;
+		justify-content: center;
+		align-items: center;
+	}
+	
+	.uploadResult ul li{
+		list-style: none;
+		padding: 10px;
+	}
+	
+	.uploadResult ul li img{
+		width: 20px;
+	}
+</style>
 
 	<div class="row">
 		<div class="col-lg-12">
@@ -121,7 +122,7 @@ $(document).ready(function(e){
 	
 	function checkExtension(fileName, fileSize){
 		
-		if(fileSize > maxSize){
+		if(fileSize >= maxSize){
 			alert("파일 사이즈 초과");
 			return false;
 		}
@@ -133,6 +134,8 @@ $(document).ready(function(e){
 		
 		return true;
 	}
+	
+	var cloneObj=$(".form-group uploadDiv").clone();
 	
 	$("input[type='file']").change(function(e){
 		var formData=new FormData();
@@ -158,7 +161,10 @@ $(document).ready(function(e){
 			dataType : 'json',
 			success : function(result){
 				console.log(result);
+				
 				showUploadResult(result);
+				
+				$(".form-group uploadDiv").html(cloneObj.html());
 			}
 		});
 		
@@ -183,7 +189,8 @@ $(document).ready(function(e){
 				str+="<span>"+obj.fileName+"</span>";
 				str+="<button type='button' data-file=\'"+fileCallPath+"\' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
 				str+="<img src='/display?fileName="+fileCallPath+"'>";
-				str+="</div></li>";
+				str+="</div>";
+				str+="</li>";
 			}else{
 				var fileCallPath=encodeURIComponent(obj.uploadPath+"/"+obj.uuid+"_"+obj.fileName);
 				var fileLink=fileCallPath.replace(new RegExp(/\\/g), "/");
@@ -194,7 +201,8 @@ $(document).ready(function(e){
 				str+="<span>"+obj.fileName+"</span>";
 				str+="<button type='button' data-file=\'"+fileCallPath+"\' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
 				str+="<img src='/resources/img/attach.png'></a>";
-				str+="</div></li>";
+				str+="</div>";
+				str+="</li>";
 			}
 		});
 		
