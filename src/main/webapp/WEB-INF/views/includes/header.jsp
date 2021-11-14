@@ -5,8 +5,8 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -257,9 +257,17 @@
                         </li>
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
+                        
                         <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
+                        
+                        <sec:authorize access="isAuthenticated()">
+                        <li><a href="/customLogout"><i class="fa fa-sign-out fa-fw"></i>로그아웃</a></li>
+                        </sec:authorize>
+                        
+                        <sec:authorize access="isAnonymous()">
+                        <li><a href="/customLogin"><i class="fa fa-sign-out fa-fw"></i>로그인</a></li>
+                        </sec:authorize>
+                        
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
@@ -378,3 +386,8 @@
         <div id="page-wrapper">
         <!-- JQuery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        
+        <!-- <script src="http://code.jquery.com/jquery-3.3.1.min.js" 
+        		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" 
+        		crossorigin="anonymous"></script> -->
+

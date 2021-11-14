@@ -13,8 +13,16 @@
 		delete from tbl_attach where uuid=#{uuid}
 	</delete>
 	
+	<delete id="deleteAll">
+		delete from tbl_attach where bno=#{bno}
+	</delete>
+	
 	<select id="findByBno" resultType="com.sm.domain.BoardAttachVO">
 		select * from tbl_attach where bno=#{bno}
+	</select>
+	
+	<select id="getOldFiles" resultType="com.sm.domain.BoardAttachVO">
+		select * from tbl_attach where uploadpath=to_char(sysdate -1, "yyyy\mm\dd")
 	</select>
 
 </mapper>

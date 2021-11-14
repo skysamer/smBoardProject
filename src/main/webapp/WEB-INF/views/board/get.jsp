@@ -4,6 +4,60 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <%@include file="../includes/header.jsp"%>
+<style>
+	.uploadResult{
+		width: 100%;
+		background-color: gray;
+	}
+	
+	.uploadResult ul{
+		display: flex;
+		flex-flow: row;
+		justify-content: center;
+		align-items: center;
+	}
+	
+	.uploadResult ul li{
+		list-style: none;
+		padding: 10px;
+	}
+	
+	.uploadResult ul li img{
+		width: 40px;
+	}
+	
+	.uploadResult ul li span{
+		color:white;
+	}
+	
+	.bigPictureWrapper{
+		position:absolute;
+		display:none;
+		justify-content:center;
+		align-items:center;
+		top:0%;
+		width:100%;
+		height:100%;
+		background-color:gray;
+		z-index:100;
+		background:rgba(255, 255, 255, 0.5);
+	}
+	
+	.bigPicture{
+		position:relative;
+		display:flex;
+		justify-content:center;
+		align-items:center;
+	}
+	
+	.bigPicture img{
+		width:600px;
+	}
+</style>
+
+
+
+
 
 <div class="row">
 	<div class="col-lg-12">
@@ -71,6 +125,28 @@
 
 </div>
 
+<!-- ÀÌ¹ÌÁö ¿øº» -->
+<div class="bigPictureWrapper">
+	<div class="bigPicture">
+	</div>
+</div>
+
+<!-- Ã·ºÎÆÄÀÏ -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">Ã·ºÎÆÄÀÏ</div>
+			
+			<div class="panel-body">
+				<div class="uploadResult">
+					<ul>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <!-- ´ñ±Û -->
 <div class="row">
 	<div class="col-lg-12">
@@ -136,8 +212,67 @@
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 
 <script>
-
 $(document).ready(function(){
+	(function(){
+		var bno='<c:out value="${board.bno}"/>';
+		
+		$.getJSON("/board/getAttachList", {bno : bno}, function(arr){
+			var str="";
+			
+			$(arr).each(function(i, attach){
+				//image type
+				if(attach.filetype){
+					var fileCallPath=encodeURIComponent(attach.uploadPath+"/s_"+attach.uuid+"_"+attach.fileName);
+					
+					str+="<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.filetype+"'><div>";
+					str+="<span> "+attach.fileName+"</span><br/>";
+					str+="<img src='/display?fileName="+fileCallPath+"'>";
+					str+="</div>";
+					str+="</li>";
+				}
+				else{
+					str+="<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' data-filename='"+attach.fileName+"' data-type='"+attach.filetype+"'><div>";
+					str+="<span> "+attach.fileName+"</span><br/>";
+					str+="<img src='/resources/img/attach.png'>";
+					str+="</div>";
+					str+="</li>";
+				}
+			});
+			$(".uploadResult ul").html(str);
+		});
+	})();
+	
+	$(".uploadResult").on("click", "li", function(e){
+		console.log("view image");
+		
+		var liObj=$(this);
+		console.log(liObj.data("fileName"));
+		var path=encodeURIComponent(liObj.data("path")+"/"+liObj.data("uuid")+"_"+liObj.data("filename"));
+		
+		if(liObj.data("type")){
+			showImage(path.replace(new RegExp(/\\/g), "/"));
+		}
+		else{
+			self.location="/download?fileName="+path
+		}
+	});
+	
+	$(".bigPictureWrapper").on("click", function(e){
+		$(".bigPicture").animate({width:"0%", height:"0%"}, 1000);
+		setTimeout(function(){
+			$(".bigPictureWrapper").hide();
+		}, 1000);
+	});
+	
+	function showImage(fileCallPath){
+		alert(fileCallPath);
+		
+		$(".bigPictureWrapper").css("display", "flex").show();
+		
+		$(".bigPicture")
+		.html("<img src='/display?fileName="+fileCallPath+"'>")
+		.animate({width:"100%", height:"100%"}, 1000);
+	}
 	
 	var bnoValue='<c:out value="${board.bno}"/>';
 	var replyUL=$(".chat");
@@ -323,6 +458,8 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 $(document).ready(function(){
+	
+	
 	
 	console.log(replyService);
 	
