@@ -1,6 +1,6 @@
 # :pushpin: smBoardProject
 >게시판 웹 프로젝트
->https://go-quality.dev  
+>
 
 </br>
 
@@ -24,7 +24,7 @@
 </br>
 
 ## 3. ERD 설계
-![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/final_erd.png)
+![]()
 
 
 ## 4. 핵심 기능
@@ -32,9 +32,7 @@
 사용자는 단지 컨텐츠의 카테고리를 선택하고, URL만 입력하면 끝입니다.  
 이 단순한 기능의 흐름을 보면, 서비스가 어떻게 동작하는지 알 수 있습니다.  
 
-<details>
-<summary><b>핵심 기능 설명 펼치기</b></summary>
-<div markdown="1">
+
 
 ### 4.1. 전체 흐름
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow1.png)
