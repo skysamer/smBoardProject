@@ -2,7 +2,7 @@
 	pageEncoding="EUC-KR"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@include file="../includes/header.jsp"%>
 <style>
 	.uploadResult{
@@ -55,10 +55,6 @@
 	}
 </style>
 
-
-
-
-
 <div class="row">
 	<div class="col-lg-12">
 		<h1 class="page-header">
@@ -80,8 +76,13 @@
 					<label>내용</label> <textarea class="form-control" rows="10" name='content' readonly="readonly"><c:out value="${board.content }"/></textarea>
 				</div>
 				
-				<button data-oper="modify" class="btn btn-default" onclick="location.href='/board/modify?bno='<c:out value="${board.bno }"/>'">수정</button>
-				<button id="btnDelModal" data-oper="removeModal" class="btn btn-danger">삭제</button>
+				<sec:authentication property="principal" var="pinfo"/>
+					<sec:authorize access="isAuthenticated()">
+						<c:if test="${pinfo.username eq board.writer }">
+							<button data-oper="modify" class="btn btn-default" onclick="location.href='/board/modify?bno='<c:out value="${board.bno }"/>'">수정</button>
+							<button id="btnDelModal" data-oper="removeModal" class="btn btn-danger">삭제</button>
+						</c:if>
+					</sec:authorize>
 				<button data-oper="list" class="btn btn-info" >목록으로</button>
 				
 				<form id="operForm" action="/board/modify" method="get">
@@ -155,7 +156,9 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="fa fa-comments fa-fw"></i> 전체 댓글
-				<button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">댓글 등록</button>
+					<sec:authorize access="isAuthenticated()">
+						<button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">댓글 등록</button>
+					</sec:authorize>	
 			</div>
 		</div>
 		
@@ -287,14 +290,32 @@ $(document).ready(function(){
 	var modalRemoveBtn=$("#modalRemoveBtn");
 	var modalRegisterBtn=$("#modalRegisterBtn");
 	
+	var replier=null;
+	
+	<sec:authorize access="isAuthenticated()">
+	
+	replier='<sec:authentication property="principal.username"/>';
+	
+	</sec:authorize>
+	
+	var csrfHeaderName="${_csrf.headerName}";
+	var csrfTokenValue="${_csrf.token}";
+	
 	$("#addReplyBtn").on("click", function(e){
+		
 		modal.find("input").val("");
+		modal.find("input[name='replier']").val(replier);
 		modalInputReplyDate.closest("div").hide();
 		modal.find("button[id != 'modalCloseBtn']").hide();
 		
 		modalRegisterBtn.show();
 		
 		$("#myModalReply").modal("show");
+	});
+	
+	// ajax security header
+	$(document).ajaxSend(function(e, xhr, options){
+		xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 	});
 	
 	// 댓글 상세보기
@@ -318,7 +339,26 @@ $(document).ready(function(){
 	
 	// 댓글 수정
 	modalModBtn.on("click", function(e){
-		var reply={rno : modal.data("rno"), reply : modalInputReply.val()};
+		var originalReplier=modalInputReplier.val();
+		
+		var reply={
+				rno : modal.data("rno"), 
+				reply : modalInputReply.val(),
+				replier : originalReplier};
+		
+		if(!replier){
+			alert("로그인 후 수정이 가능합니다.");
+			modal.modal("hide");
+			return;
+		}
+		
+		console.log("Original Replier: "+originalReplier);
+		
+		if(replier!=originalReplier){
+			alert("직접 작성한 댓글만 수정이 가능합니다.");
+			modal.modal("hide");
+			return;
+		}
 		
 		replyService.update(reply, function(result){
 			alert(result);
@@ -331,7 +371,21 @@ $(document).ready(function(){
 	modalRemoveBtn.on("click", function(e){
 		var rno=modal.data("rno");
 		
-		replyService.remove(rno, function(result){
+		if(!replier){
+			alert("로그인 후 삭제가 가능합니다.");
+			modal.modal("hide");
+			return;
+		}
+		
+		var originalReplier=modalInputReplier.val();
+		
+		if(replier!=originalReplier){
+			alert("직접 작성한 댓글만 삭제가 가능합니다.");
+			modal.modal("hide");
+			return;
+		}
+		
+		replyService.remove(rno, originalReplier, function(result){
 			alert(result);
 			modal.modal("hide");
 			showList(pageNum);
@@ -454,11 +508,15 @@ $(document).ready(function(){
 </script>
 
 
-
-
+<sec:authentication property="principal" var="pinfo"/>
+<sec:authorize access="isAuthenticated()">
+        <!-- csrf 처리 -->
+<c:if test="${pinfo.username eq board.writer }"> 
 <script type="text/javascript">
 $(document).ready(function(){
 	
+	var csrfHeaderName = "${_csrf.parameterName }";
+	var csrfTokenValue = "${_csrf.token}";
 	
 	
 	console.log(replyService);
@@ -472,7 +530,21 @@ $(document).ready(function(){
 	});
 	
 	$("button[data-oper='remove']").on("click", function(e){
-		operForm.attr("action", "/board/remove").attr("method", "post").submit();
+		var input   = document.createElement('input');
+		
+		input.type= 'hidden';
+		input.name= csrfHeaderName;
+		input.value= csrfTokenValue;
+		
+		var input2=document.createElement('input');
+		
+		input2.type= 'hidden';
+		input2.name= 'writer';
+		input2.value= '<sec:authentication property="principal.username"/>';
+
+		console.log(input);
+		console.log(input2);
+		operForm.attr("action", "/board/remove").attr("method", "post").appendTo('body').append(input, input2).submit();
 	});
 	
 	$("button[data-oper='list']").on("click", function(e){
@@ -489,3 +561,5 @@ $(document).ready(function(){
 	
 });
 </script>
+</c:if>
+</sec:authorize>

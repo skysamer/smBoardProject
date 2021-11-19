@@ -15,7 +15,7 @@
 	
 	<!-- 한글 깨짐 처리 -->
 	<filter>
-		<filter-name>encoding</filter-name>
+		<filter-name>encodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter
 		</filter-class>
 		<init-param>
@@ -25,8 +25,8 @@
 	</filter>
 
 	<filter-mapping>
-		<filter-name>encoding</filter-name>
-		<servlet-name>appServlet</servlet-name>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
 	<filter>

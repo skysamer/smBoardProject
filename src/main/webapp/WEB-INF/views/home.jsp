@@ -12,3 +12,7 @@
 <P>  현재시간: ${serverTime}. </P>
 </body>
 </html>
+
+<script type="text/javascript">
+self.location="/board/list";
+</script>

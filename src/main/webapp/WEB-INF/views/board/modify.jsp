@@ -2,7 +2,7 @@
 	pageEncoding="EUC-KR"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@include file="../includes/header.jsp"%>
 <style>
 	.uploadResult{
@@ -73,6 +73,8 @@
 				<div class="panel-body">
 				
 					<form action="/board/modify" role="form" method="post">
+						
+						<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"/>
 					
 						<input type="hidden" name="pageNum" value="<c:out value="${cri.pageNum }"/>">
 						<input type="hidden" name="amount" value="<c:out value="${cri.amount }"/>">
@@ -92,8 +94,14 @@
 							<label>작성자</label> <input class="form-control" name="writer" value='<c:out value="${board.writer }"/>' readonly="readonly">
 						</div>
 						
-						<button type="submit" data-oper='modify' class="btn btn-default">수정</button>
-						<button type="submit" data-oper='list' class="btn btn-list">목록으로</button>
+						<sec:authentication property="principal" var="pinfo"/>
+						
+						<sec:authorize access="isAuthenticated()">
+						<c:if test="${pinfo.username eq board.writer }"> 
+							<button type="submit" data-oper='modify' class="btn btn-default">수정</button>
+							<button type="submit" data-oper='list' class="btn btn-list">목록으로</button>
+						</c:if>
+						</sec:authorize>
 						
 					</form>
 					
@@ -197,6 +205,9 @@ $(document).ready(function(){
 		return true;
 	}
 	
+	var csrfHeaderName="${_csrf.headerName}";
+	var csrfToeknValue="${_csrf.token}";
+	
 	$("input[type='file']").change(function(e){
 		var formData=new FormData();
 		
@@ -218,6 +229,9 @@ $(document).ready(function(){
 			contentType : false,
 			data : formData,
 			type : 'POST',
+			beforeSend : function(xhr){
+				xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+			},
 			dataType : 'json',
 			success : function(result){
 				alert("uploaded");

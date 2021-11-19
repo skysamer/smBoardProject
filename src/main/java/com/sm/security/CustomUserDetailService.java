@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import com.sm.domain.CustomUser;
 import com.sm.domain.MemberVO;
 import com.sm.mapper.MemberMapper;
-
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
