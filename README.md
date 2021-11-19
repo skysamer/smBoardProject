@@ -26,11 +26,13 @@
 ## 3. ERD 설계
 ![]()
 
-
 ## 4. 전체 흐름
 <img width="831" src="https://user-images.githubusercontent.com/73572543/142586025-0e310172-7256-44ee-b79e-a4e1cd43c2e1.png">
+</br>
 
-### 4.1. 사용자 요청
+## 5. 웹 게시물 관리
+
+### 5.1. 사용자 요청
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_vue.png)
 
 - **URL 정규식 체크** :pushpin: [코드 확인](https://github.com/Integerous/goQuality/blob/b587bbff4dce02e3bec4f4787151a9b6fa326319/frontend/src/components/PostInput.vue#L67)
@@ -40,7 +42,7 @@
 - **Axios 비동기 요청** :pushpin: [코드 확인]()
   - URL의 모양새인 경우, 컨텐츠를 등록하는 POST 요청을 비동기로 날립니다.
 
-### 4.2. Controller
+### 5.2. Controller
 
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_controller.png)
 
@@ -50,7 +52,7 @@
 - **결과 응답** :pushpin: [코드 확인]()
   - Service 계층에서 넘어온 로직 처리 결과(메세지)를 화면단에 응답해줍니다.
 
-### 4.3. Service
+### 5.3. Service
 
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_service1.png)
 
@@ -71,7 +73,7 @@
   - 컨텐츠에 이미지가 없을 경우, 미리 설정해둔 기본 이미지를 사용하고, 제목이 없을 경우 생략합니다.
 
 
-### 4.4. Mapper
+### 5.4. Mapper
 
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_repo.png)
 
@@ -84,8 +86,8 @@
 
 </br>
 
-## 5. 페이징 처리
-### 5.1. 컨텐츠 필터와 페이징 처리 문제
+## 6. 페이징 처리
+### 6.1. 컨텐츠 필터와 페이징 처리 문제
 - 저는 이 서비스가 페이스북이나 인스타그램 처럼 가볍게, 자주 사용되길 바라는 마음으로 개발했습니다.  
 때문에 페이징 처리도 무한 스크롤을 적용했습니다.
 
@@ -152,42 +154,42 @@ public List<PostResponseDto> listFilteredByDate(String createdDate) {
 
 </br>
 
-## 6. 페이징 처리
+## 7. 페이징 처리
 
 </div>
 </details>
 
 </br>
 
-## 7. 검색 기능
+## 8. 검색 기능
 
 </div>
 </details>
 
 </br>
 
-## 7. REST와 Ajax를 활용한 댓글 처리
+## 9. REST와 Ajax를 활용한 댓글 처리
 
 </div>
 </details>
 
 </br>
 
-## 8. 파일 업로드
+## 10. 파일 업로드
 
 </div>
 </details>
 
 </br>
 
-## 9. 스프링 시큐리티를 활용한 로그인 처리
+## 11. 스프링 시큐리티를 활용한 로그인 처리
 
 </div>
 </details>
 
 </br>
 
-## 6. 그 외 트러블 슈팅
+## 12. 그 외 트러블 슈팅
 <details>
 <summary>npm run dev 실행 오류</summary>
 <div markdown="1">
