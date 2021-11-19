@@ -27,17 +27,11 @@
 ![]()
 
 
-## 4. 핵심 기능
-이 서비스의 핵심 기능은 컨텐츠 등록 기능입니다.  
-사용자는 단지 컨텐츠의 카테고리를 선택하고, URL만 입력하면 끝입니다.  
-이 단순한 기능의 흐름을 보면, 서비스가 어떻게 동작하는지 알 수 있습니다.  
+## 4. 전체 흐름
 
-
-
-### 4.1. 전체 흐름
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow1.png)
 
-### 4.2. 사용자 요청
+### 4.1. 사용자 요청
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_vue.png)
 
 - **URL 정규식 체크** :pushpin: [코드 확인](https://github.com/Integerous/goQuality/blob/b587bbff4dce02e3bec4f4787151a9b6fa326319/frontend/src/components/PostInput.vue#L67)
@@ -47,7 +41,7 @@
 - **Axios 비동기 요청** :pushpin: [코드 확인]()
   - URL의 모양새인 경우, 컨텐츠를 등록하는 POST 요청을 비동기로 날립니다.
 
-### 4.3. Controller
+### 4.2. Controller
 
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_controller.png)
 
@@ -57,7 +51,7 @@
 - **결과 응답** :pushpin: [코드 확인]()
   - Service 계층에서 넘어온 로직 처리 결과(메세지)를 화면단에 응답해줍니다.
 
-### 4.4. Service
+### 4.3. Service
 
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_service1.png)
 
@@ -78,7 +72,7 @@
   - 컨텐츠에 이미지가 없을 경우, 미리 설정해둔 기본 이미지를 사용하고, 제목이 없을 경우 생략합니다.
 
 
-### 4.5. Repository
+### 4.4. Mapper
 
 ![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow_repo.png)
 
@@ -91,16 +85,12 @@
 
 </br>
 
-## 5. 핵심 트러블 슈팅
+## 5. 페이징 처리
 ### 5.1. 컨텐츠 필터와 페이징 처리 문제
 - 저는 이 서비스가 페이스북이나 인스타그램 처럼 가볍게, 자주 사용되길 바라는 마음으로 개발했습니다.  
 때문에 페이징 처리도 무한 스크롤을 적용했습니다.
 
-- 하지만 [무한스크롤, 페이징 혹은 “더보기” 버튼? 어떤 걸 써야할까](https://cyberx.tistory.com/82) 라는 글을 읽고 무한 스크롤의 단점들을 알게 되었고,  
-다양한 기준(카테고리, 사용자, 등록일, 인기도)의 게시물 필터 기능을 넣어서 이를 보완하고자 했습니다.
 
-- 그런데 게시물이 필터링 된 상태에서 무한 스크롤이 동작하면,  
-필터링 된 게시물들만 DB에 요청해야 하기 때문에 아래의 **기존 코드** 처럼 각 필터별로 다른 Query를 날려야 했습니다.
 
 <details>
 <summary><b>기존 코드</b></summary>
@@ -156,32 +146,42 @@ public List<PostResponseDto> listFilteredByDate(String createdDate) {
 각 게시물은 최대 3개까지의 카테고리(tag)를 가질 수 있어 해당 카테고리를 포함하는 모든 게시물을 질의해야 했기 때문에  
 - 아래 **개선된 코드**와 같이 QueryDSL을 사용하여 다소 복잡한 Query를 작성하면서도 페이징 처리를 할 수 있었습니다.
 
-<details>
-<summary><b>개선된 코드</b></summary>
-<div markdown="1">
 
-~~~java
-/**
- * 게시물 필터 (Tag Name)
- */
-@Override
-public Page<Post> findAllByTagName(String tagName, Pageable pageable) {
 
-    QueryResults<Post> results = queryFactory
-            .selectFrom(post)
-            .innerJoin(postTag)
-                .on(post.idx.eq(postTag.post.idx))
-            .innerJoin(tag)
-                .on(tag.idx.eq(postTag.tag.idx))
-            .where(tag.name.eq(tagName))
-            .orderBy(post.idx.desc())
-                .limit(pageable.getPageSize())
-                .offset(pageable.getOffset())
-            .fetchResults();
+</div>
+</details>
 
-    return new PageImpl<>(results.getResults(), pageable, results.getTotal());
-}
-~~~
+</br>
+
+## 6. 페이징 처리
+
+</div>
+</details>
+
+</br>
+
+## 7. 검색 기능
+
+</div>
+</details>
+
+</br>
+
+## 7. REST와 Ajax를 활용한 댓글 처리
+
+</div>
+</details>
+
+</br>
+
+## 8. 파일 업로드
+
+</div>
+</details>
+
+</br>
+
+## 9. 스프링 시큐리티를 활용한 로그인 처리
 
 </div>
 </details>
