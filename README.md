@@ -63,26 +63,27 @@
   - @RequestParam을 이용하여 게시글 번호값을 명시적으로 처리
 
 ### 5.2. Service :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/service/BoardServiceImpl.java)
-- 
+- 인터페이스(interface)를 생성하고 이를 상속하는 형태로 구현
+- @Service 어노테이션을 선언하여 비즈니스 영역을 담당하는 객체임을 표시
+- Mapper 클래스 의존성 주입
 
-- **Http 프로토콜 추가 및 trim()** 
-  - 사용자가 URL 입력 시 Http 프로토콜을 생략하거나 공백을 넣은 경우,  
-  올바른 URL이 될 수 있도록 Http 프로토콜을 추가해주고, 공백을 제거해줍니다.
+- **글 등록** 
+  - mapper.insertSelectKey()의 반환값인 int가 아닌 void를 반환값으로 설정
 
-- **URL 접속 확인** 
-  - 화면단에서 모양새만 확인한 URL이 실제 리소스로 연결되는지 HttpUrlConnection으로 테스트합니다.
-  - 이 때, 빠른 응답을 위해 Request Method를 GET이 아닌 HEAD를 사용했습니다.
-  - (HEAD 메소드는 GET 메소드의 응답 결과의 Body는 가져오지 않고, Header만 확인하기 때문에 GET 메소드에 비해 응답속도가 빠릅니다.)
+- **글 목록** 
+  - vo객체의 list값을 반환값으로 설정
 
-- **Jsoup 이미지, 제목 파싱** 
-  - URL 접속 확인결과 유효하면 Jsoup을 사용해서 입력된 URL의 이미지와 제목을 파싱합니다.
-  - 이미지는 Open Graphic Tag를 우선적으로 파싱하고, 없을 경우 첫 번째 이미지와 제목을 파싱합니다.
-  - 컨텐츠에 이미지가 없을 경우, 미리 설정해둔 기본 이미지를 사용하고, 제목이 없을 경우 생략합니다.
+- **글 상세 보기** 
+  - vo객체값을 반환값으로 설정
+
+- **글 삭제 및 수정** 
+  - Boolean 타입으로 반환값을 설정
 
 
-### 5.3. Mapper
+### 5.3. Mapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/BoardMapper.xml)
+- 테이블 설계를 기준으로 vo클래스를 생성
 
-- **컨텐츠 저장** :pushpin: [코드 확인]()
+- **컨텐츠 저장** 
   - URL 유효성 체크와 이미지, 제목 파싱이 끝난 컨텐츠는 DB에 저장합니다.
   - 저장된 컨텐츠는 다시 Repository - Service - Controller를 거쳐 화면단에 송출됩니다.
 
