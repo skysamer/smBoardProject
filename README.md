@@ -25,7 +25,7 @@
 </br>
 
 ## 3. ERD 설계
-![]()
+<img width="769" src="https://user-images.githubusercontent.com/73572543/143258430-08d7d0c0-570e-4abc-b432-910fb017b65a.png">
 
 ## 4. 전체 흐름
 <img width="831" src="https://user-images.githubusercontent.com/73572543/142586025-0e310172-7256-44ee-b79e-a4e1cd43c2e1.png">
@@ -84,9 +84,12 @@
 - 테이블 설계를 기준으로 vo클래스를 생성
 - DAO 클래스 대신 Mapper 인터페이스를 작성
 
-- **글 목록 ** 
-  - URL 유효성 체크와 이미지, 제목 파싱이 끝난 컨텐츠는 DB에 저장합니다.
-  - 저장된 컨텐츠는 다시 Repository - Service - Controller를 거쳐 화면단에 송출됩니다.
+- **글 등록** 
+  - seq_board.nextval 시퀀스를 이용하여 시퀀스의 다음 값을 구해서 insert
+  - 혹은 selectKey구문을 이용하여 시퀀스의 값을 bno에 저장한 후 이 값을 이용하여 insert
+
+- **상세 글 조회 및 삭제**
+  - bno(글번호)값을 파라미터로 지정하여 특정 번호의 글 조회 혹은 삭제
 
 </div>
 </details>
@@ -94,10 +97,15 @@
 </br>
 
 ## 6. 페이징 처리
-### 6.1. 컨텐츠 필터와 페이징 처리 문제
-- 저는 이 서비스가 페이스북이나 인스타그램 처럼 가볍게, 자주 사용되길 바라는 마음으로 개발했습니다.  
-때문에 페이징 처리도 무한 스크롤을 적용했습니다.
+- 무한 스크롤 방식이 아닌 페이지 별로 번호를 지정하여 관리
+- 가장 최신글부터 볼 수 있도록 정렬
 
+
+### 6.1. Mapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/BoardMapper.xml)
+- order by 대신에 index를 활용하여 별도의 정렬과정 생략
+
+- **글 등록** 
+  - seq_board
 
 
 <details>
