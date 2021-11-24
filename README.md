@@ -82,8 +82,9 @@
 
 ### 5.3. Mapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/BoardMapper.xml)
 - 테이블 설계를 기준으로 vo클래스를 생성
+- DAO 클래스 대신 Mapper 인터페이스를 작성
 
-- **컨텐츠 저장** 
+- **글 목록 ** 
   - URL 유효성 체크와 이미지, 제목 파싱이 끝난 컨텐츠는 DB에 저장합니다.
   - 저장된 컨텐츠는 다시 Repository - Service - Controller를 거쳐 화면단에 송출됩니다.
 
