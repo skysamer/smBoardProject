@@ -98,11 +98,28 @@
 
 ## 6. 페이징 처리
 - 무한 스크롤 방식이 아닌 페이지 별로 번호를 지정하여 관리
-- 가장 최신글부터 볼 수 있도록 정렬
+- 가장 최신글부터 볼 수 있도록 역순(descending)으로 정렬
 
 
 ### 6.1. Mapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/BoardMapper.xml)
-- order by 대신에 index를 활용하여 별도의 정렬과정 생략
+- order by 대신에 index_desc 힌트를 활용하여 별도의 정렬과정 생략
+- rownum 컬럼을 활용하여 각 페이지당 할당할 글 개수를 지정함
+- 인라인뷰를 활용하여 반드시 1을 포함해야하는 rownum의 범위를 임의로 지정하여 특정 페이지에 포함되는 글 번호와 개수를 출력하도록 함(rownum을 하나의 컬럼으로 활용하기 위함)
+- 파라미터값을 지정하여 페이지 번호, 페이지 당 데이터 개수 값을 받음
+- 메서드에서 Criteria객체를 파라미터로 받도록 지정
+
+### 6.2. Criteria :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/Criteria.java)
+- 페이지 번호와 페이지 당 데이터 개수값을 하나의 객체로 관리하기 위해 생성한 클래스
+- 생성자를 통해서 기본값을 1페이지, 20개로 지정하여 처리
+
+### 6.3. Service :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/service/BoardServiceImpl.java)
+- 글 목록을 출력하는 메서드의 파라미터 값으로 Criteria 객체를 지정
+
+### 6.4. Controller :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/BoardController.java)
+- 글 목록을 출력하는 메서드의 파라미터 값으로 Criteria 객체를 지정
+
+### 6.5. PageDTO :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/PageDTO.java)
+- 
 
 - **글 등록** 
   - seq_board
