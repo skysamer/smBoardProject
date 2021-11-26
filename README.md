@@ -117,9 +117,15 @@
 
 ### 6.4. Controller :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/BoardController.java)
 - 글 목록을 출력하는 메서드의 파라미터 값으로 Criteria 객체를 지정
+- PageDTO 객체에 Criteria, 전체 데이터 수 파라미터값을 지정하여 Model객체로 감싸서 화면단에 전송
 
 ### 6.5. PageDTO :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/PageDTO.java)
-- 
+- 현재 페이지 번호, 끝 페이지와 시작 페이지 번호(10개 페이지씩 관리), 다음 페이지와 이전 페이지 번호 정보를 관리하기 위한 객체
+- 생성자를 정의하여 Criteria와 전체 데이터 개수를 파라미터로 지정
+- 페이지 끝번호는 현재 페이지 번호를 소수점 처리 후, 올림하고 10을 곱하여 지정
+- 페이지 첫번호는 페이지 끝번호에서 9를 뺀 값을 지정
+- 이전 페이지는 페이지 첫번호가 1보다 큰 경우, 즉 현재 페이지 번호가 10이상인 경우만 생성되도록 지정
+- 다음 페이지는 페이지 끝번호가 최종 페이지 끝번호보다 작을 경우만 생성되도록 지정
 
 - **글 등록** 
   - seq_board
