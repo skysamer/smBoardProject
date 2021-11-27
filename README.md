@@ -130,9 +130,6 @@
 - 이전 페이지는 페이지 첫번호가 1보다 큰 경우, 즉 현재 페이지 번호가 10이상인 경우만 생성되도록 지정
 - 다음 페이지는 페이지 끝번호가 최종 페이지 끝번호보다 작을 경우만 생성되도록 지정
 
-- **글 등록** 
-  - seq_board
-
 
 <details>
 <summary><b>기존 코드</b></summary>
@@ -146,20 +143,11 @@ public Page<PostResponseDto> listTopTen() {
     return postRepository.findAll(pageRequest).map(PostResponseDto::new);
 }
 
-
-public Page<PostResponseDto> listFilteredByTagName(String tagName, Pageable pageable) {
-
-    return postRepository.findAllByTagName(tagName, pageable).map(PostResponseDto::new);
-}
-  
 ~~~
 
 </div>
 </details>
 
-
-
-ㅇㅈㅇㅈㅂㅇㅈㅂㅇㅈㅂㅇㅈㅂ
 </div>
 </details>
 
@@ -168,7 +156,18 @@ public Page<PostResponseDto> listFilteredByTagName(String tagName, Pageable page
 ## 7. 검색 기능
 - 제목 / 내용 / 작성자 단일 검색 기능
 - 제목 or 내용과 같은 다중 항목 검색 기능
+- 검색조건에 대한 처리는 SQL 인라인뷰 안에서 해결
+- LIKE 처리를 통해서 키워드를 사용
 
+### 7.1. Mapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/BoardMapper.xml)
+- 동적 SQL기능을 사용하여 경우에 따라 다른 SQL을 만들어 실행
+
+### 7.2. Criteria :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/Criteria.java)
+- 검색 조건과 검색 키워드 처리를 위한 변수인 keyword와 type변수 추가
+- getTypeArr()메서드를 생성하여 
+- or연산자를 우선으로 하기 위하여 trim prefix와 suffix 태그를 활용하여 앞뒤로 '('와 ') and'를 추가
+- typeArr을 객체로 하는 foreach반복 태그를 생성하여 'or title... or content...'와 같은 구문을 생성한다.
+- prefixOverrides 태그를 활용하여 맨 앞의 or을 지운다.
 
 </div>
 </details>
