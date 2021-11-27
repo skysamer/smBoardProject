@@ -120,7 +120,7 @@
 - PageDTO 객체에 Criteria, 전체 데이터 수 파라미터값을 지정하여 Model객체로 감싸서 화면단에 전송
 - 전체 데이터 수의 경우, 
 - 상세 글 목록 조회 메서드에서 Criteria 파라미터를 추가
-- 글 수정 및 삭제 메서드에 Criteria 파라미터 값을 추가하고, 페이지 번호값과 페이지 당 데이터 개수값을 Model객체로 감싸서 전달
+- 글 수정 및 삭제 메서드에 Criteria 파라미터 값을 추가하고, 페이지 번호값과 페이지 당 데이터 개수값을 RedirectAttribute 객체로 감싸서 전달
 
 ### 6.5. PageDTO :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/PageDTO.java)
 - 현재 페이지 번호, 끝 페이지와 시작 페이지 번호(10개 페이지씩 관리), 다음 페이지와 이전 페이지 번호 정보를 관리하기 위한 객체
@@ -161,13 +161,20 @@ public Page<PostResponseDto> listTopTen() {
 
 ### 7.1. Mapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/BoardMapper.xml)
 - 동적 SQL기능을 사용하여 경우에 따라 다른 SQL을 만들어 실행
+- or연산자를 우선으로 하기 위하여 trim prefix와 suffix 태그를 활용하여 앞뒤로 '('와 ') and'를 추가
+- typeArr을 객체로 하는 foreach반복 태그를 생성하여 'or title... or content...'와 같은 구문을 생성
+- prefixOverrides 태그를 활용하여 맨 앞의 or을 지움
+- sql태그를 이용하여 검색조건 부분을 따로 저장하고, getListWithPaging태그 부분에 include refid 태그를 이용하여 추가
 
 ### 7.2. Criteria :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/Criteria.java)
 - 검색 조건과 검색 키워드 처리를 위한 변수인 keyword와 type변수 추가
-- getTypeArr()메서드를 생성하여 
-- or연산자를 우선으로 하기 위하여 trim prefix와 suffix 태그를 활용하여 앞뒤로 '('와 ') and'를 추가
-- typeArr을 객체로 하는 foreach반복 태그를 생성하여 'or title... or content...'와 같은 구문을 생성한다.
-- prefixOverrides 태그를 활용하여 맨 앞의 or을 지운다.
+- getTypeArr()메서드를 생성하여 제목 / 내용 / 작성자 각 타입의 값을 갖는 배열 생성
+- UriComponentBuilder 클래스를 이용하여 페이지 번호 / 페이지 당 데이터 수 / 검색조건 / 키워드 파라미터를 연결하여 URL형태로 생성
+
+### 7.3. Controller :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/BoardController.java)
+- 글 수정 및 삭제 메서드에 검색조건과 키워드 데이터인 type과 keyword값을 RedirectAttribute객체로 감싸서 화면단에 전달
+- Criteria 객체의 getListLink()메서드를 이용하여 글 삭제 및 수정 메서드의 반환값에 cri.getListLink() 병합
+
 
 </div>
 </details>
