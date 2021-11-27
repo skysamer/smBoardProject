@@ -182,6 +182,18 @@ public Page<PostResponseDto> listTopTen() {
 </br>
 
 ## 8. 댓글 처리
+- 순수한 데이터만을 처리하는 REST방식으로 전환
+- 데이터를 JSON 방식으로 주고 받음
+
+### 8.1. Mapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/ReplyMapper.xml)
+- tbl_board 테이블의 bno컬럼을 fk값으로 활용하여 특정글에 대한 댓글을 구분할 수 있도록 매핑
+- seq_reply를 시퀀스로 지정하여 seq_reply.nextval을 활용하여 댓글 번호 자동 증가 처리
+- 댓글 삭제, 수정, 등록 interface 메서드의 경우 int형을 반환값으로 설정
+- 댓글의 페이징 처리를 위하여 댓글 목록 interface메서드의 파라미터 값으로 Criteria객체와 bno값을 지정(@Param을 활용하여 2개의 파라미터 지정)
+
+
+### 8.2. Service :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/service/ReplyServiceImpl.java)
+- 
 
 </div>
 </details>
