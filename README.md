@@ -118,6 +118,9 @@
 ### 6.4. Controller :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/BoardController.java)
 - 글 목록을 출력하는 메서드의 파라미터 값으로 Criteria 객체를 지정
 - PageDTO 객체에 Criteria, 전체 데이터 수 파라미터값을 지정하여 Model객체로 감싸서 화면단에 전송
+- 전체 데이터 수의 경우, 
+- 상세 글 목록 조회 메서드에서 Criteria 파라미터를 추가
+- 글 수정 및 삭제 메서드에 Criteria 파라미터 값을 추가하고, 페이지 번호값과 페이지 당 데이터 개수값을 Model객체로 감싸서 전달
 
 ### 6.5. PageDTO :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/PageDTO.java)
 - 현재 페이지 번호, 끝 페이지와 시작 페이지 번호(10개 페이지씩 관리), 다음 페이지와 이전 페이지 번호 정보를 관리하기 위한 객체
@@ -148,22 +151,7 @@ public Page<PostResponseDto> listFilteredByTagName(String tagName, Pageable page
 
     return postRepository.findAllByTagName(tagName, pageable).map(PostResponseDto::new);
 }
-
-// ... 게시물 필터 (Member) 생략 
-
-
-public List<PostResponseDto> listFilteredByDate(String createdDate) {
-
-    // 등록일 00시부터 24시까지
-    LocalDateTime start = LocalDateTime.of(LocalDate.parse(createdDate), LocalTime.MIN);
-    LocalDateTime end = LocalDateTime.of(LocalDate.parse(createdDate), LocalTime.MAX);
-
-    return postRepository
-                    .findAllByCreatedAtBetween(start, end)
-                    .stream()
-                    .map(PostResponseDto::new)
-                    .collect(Collectors.toList());
-    }
+  
 ~~~
 
 </div>
@@ -177,42 +165,38 @@ public List<PostResponseDto> listFilteredByDate(String createdDate) {
 
 </br>
 
-## 7. 페이징 처리
+## 7. 검색 기능
+- 제목 / 내용 / 작성자 단일 검색 기능
+- 제목 or 내용과 같은 다중 항목 검색 기능
+
 
 </div>
 </details>
 
 </br>
 
-## 8. 검색 기능
+## 8. 댓글 처리
 
 </div>
 </details>
 
 </br>
 
-## 9. REST와 Ajax를 활용한 댓글 처리
+## 9. 파일 업로드
 
 </div>
 </details>
 
 </br>
 
-## 10. 파일 업로드
+## 10. 로그인 처리
 
 </div>
 </details>
 
 </br>
 
-## 11. 스프링 시큐리티를 활용한 로그인 처리
-
-</div>
-</details>
-
-</br>
-
-## 12. 그 외 트러블 슈팅
+## 11. 트러블 슈팅
 <details>
 <summary>npm run dev 실행 오류</summary>
 <div markdown="1">
