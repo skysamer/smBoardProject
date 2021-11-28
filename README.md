@@ -172,35 +172,8 @@ public Page<PostResponseDto> listTopTen() {
 - UriComponentBuilder 클래스를 이용하여 페이지 번호 / 페이지 당 데이터 수 / 검색조건 / 키워드 파라미터를 연결하여 URL형태로 생성
 
 ### 7.3. Controller :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/BoardController.java)
-- JSON 데이터로 변환하기 위한 jackson-databind 라이브러리를 pom.xml에 추가
-- 자바 인스턴스를 JSON 타입의 문자열로 변환하기 위한 gson 라이브러리 추가
 - 글 수정 및 삭제 메서드에 검색조건과 키워드 데이터인 type과 keyword값을 RedirectAttribute객체로 감싸서 화면단에 전달
 - Criteria 객체의 getListLink()메서드를 이용하여 글 삭제 및 수정 메서드의 반환값에 cri.getListLink() 병합
-
-- **댓글 목록** 
-  - produces를 이용하여 JSON 데이터를 반환하도록 지정
-
-- **댓글 등록** 
-  - consumes를 이용하여 서버단에서 JSON 타입으로 된 댓글 데이터를 전송받음
-  - @PostMapping 어노테이션을 지정하여 POST방식으로 전송하도록 설정
-  - 데이터와 함께 HTTP 헤더의 상태 메시지를 같이 전송하기 위해 ResponseEntity 객체를 반환값으로 지정
-  - produces를 이용하여 처리 결과가 정상적으로 되었는지 문자열로 결과 반환
-  - ReplyVO 객체를 파라미터 값으로 지정하고 @RequestBody 어노테이션을 지정하여 JSON 데이터를 ReplyVO 타입으로 변환
-
-- **상세 글 조회** 
-  - @RequestParam을 이용하여 게시글 번호값을 명시적으로 처리
-  - 게시글 vo객체를 model객체를 활용하여 화면단에 전달
-
-- **글 수정**
-  - 변경된 내용을 수집하여 게시글 vo객체 파라미터로 처리
-  - 리턴 타입에 'redirect:' 접두어를 지정하여 수정 후 목록 화면으로 이동하도록 지정
-  - RedirectAttributes 객체를 파라미터로 지정하여 수정이 정상적으로 동작한 경우 성공 메시지를 화면단에 일회성 데이터로 전달
-
-- **글 삭제**
-  - post 방식으로 지정
-  - 리턴 타입에 'redirect:' 접두어를 지정하여 삭제 후 목록 화면으로 이동하도록 지정
-  - RedirectAttributes 객체를 파라미터로 지정하여 삭제가 정상적으로 동작한 경우 성공 메시지를 화면단에 일회성 데이터로 전달
-  - @RequestParam을 이용하여 게시글 번호값을 명시적으로 처리
 
 
 </div>
@@ -211,6 +184,9 @@ public Page<PostResponseDto> listTopTen() {
 ## 8. 댓글 처리
 - 순수한 데이터만을 처리하는 REST방식으로 전환
 - 데이터를 JSON 방식으로 주고 받음
+- JSON 데이터로 변환하기 위한 jackson-databind 라이브러리를 pom.xml에 추가
+- 자바 인스턴스를 JSON 타입의 문자열로 변환하기 위한 gson 라이브러리 추가
+
 
 ### 8.1. Mapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/ReplyMapper.xml)
 - tbl_board 테이블의 bno컬럼을 fk값으로 활용하여 특정글에 대한 댓글을 구분할 수 있도록 매핑
@@ -221,7 +197,37 @@ public Page<PostResponseDto> listTopTen() {
 
 ### 8.2. Controller :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/ReplyController.java)
 - @RestController 어노테이션을 이용하여 REST방식으로 설계
-- PK를 기준으로 URL을 설계(PK만으로 조회, 수정, 삭제가 가능하도록 설계)
+- PK(rno)를 기준으로 URL을 설계(PK만으로 조회, 수정, 삭제가 가능하도록 설계)
+- 댓글 조회, 수정, 삭제 메서드의 경우 rno 파라미터 값을 @PathVariable 어노테이션으로 지정하여 URL에 파라미터 전달
+- 데이터 조회 메서드의 경우 @GetMapping 어노테이션을 지정
+
+- **특정 게시글 댓글 목록** 
+  - produces를 이용하여 JSON 데이터를 반환하도록 지정
+  - 페이지 번호 데이터(page)와 글 번호 데이터(bno)를 @PathVariable 어노테이션을 이용하여 파라미터로 지정
+  - 파라미터에 @PathVariable 어노테이션을 지정하여 url에 파라미터 값을 같이 전달
+  - 생성된 page파리미터는 Criteria 인스턴스를 생성하여 처리
+
+- **댓글 등록** 
+  - consumes를 이용하여 서버단에서 JSON 타입으로 된 댓글 데이터를 전송받음
+  - @PostMapping 어노테이션을 지정하여 POST방식으로 전송하도록 설정
+  - 데이터와 함께 HTTP 헤더의 상태 메시지를 같이 전송하기 위해 ResponseEntity 객체를 반환값으로 지정
+  - produces를 이용하여 처리 결과가 정상적으로 되었는지 문자열로 결과 반환
+  - ReplyVO 객체를 파라미터 값으로 지정하고 @RequestBody 어노테이션을 지정하여 JSON 데이터를 ReplyVO 타입으로 변환
+
+- **댓글 조회** 
+  - @RequestParam을 이용하여 게시글 번호값을 명시적으로 처리
+  - 게시글 vo객체를 model객체를 활용하여 화면단에 전달
+  - produces를 이용하여 JSON 데이터를 반환하도록 지정
+
+- **댓글 수정**
+  - produces를 이용하여 처리 결과가 정상적으로 되었는지 문자열로 결과 반환
+  - consumes를 이용하여 서버단에서 JSON 타입으로 된 댓글 데이터를 전송받음
+  - ReplyVO 객체를 파라미터 값으로 지정하고 @RequestBody 어노테이션을 지정하여 JSON 데이터를 ReplyVO 타입으로 변환
+  - method를 이용하여 PUT 혹은 PATCH 방식으로 전송하도록 지정
+
+- **댓글 삭제**
+  - produces를 이용하여 처리 결과가 정상적으로 되었는지 문자열로 결과 반환
+  - @DeleteMapping 어노테이션을 지정하여 DELETE 방식으로 전송하도록 지정
 
 </div>
 </details>
