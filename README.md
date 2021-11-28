@@ -107,6 +107,8 @@
 - 인라인뷰를 활용하여 반드시 1을 포함해야하는 rownum의 범위를 임의로 지정하여 특정 페이지에 포함되는 글 번호와 개수를 출력하도록 함(rownum을 하나의 컬럼으로 활용하기 위함)
 - 파라미터값을 지정하여 페이지 번호, 페이지 당 데이터 개수 값을 받음
 - 메서드에서 Criteria객체를 파라미터로 받도록 지정
+- 인덱스를 생성하고 rownum컬럼을 불러와서 오름차순으로 정렬 후, Criteria 객체의 pageNum, amount데이터를 이용하여 웹 게시물과 같이 페이징 처리
+- 댓글의 숫자를 파악할 수 있는 getCountByBno()메서드 작성
 
 ### 6.2. Criteria :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/Criteria.java)
 - 페이지 번호와 페이지 당 데이터 개수값을 하나의 객체로 관리하기 위해 생성한 클래스
@@ -183,6 +185,7 @@ public Page<PostResponseDto> listTopTen() {
 
 ## 8. 댓글 처리
 - 순수한 데이터만을 처리하는 REST방식으로 전환
+- 화면단에서 JSON 데이터를 Ajax로 
 - 데이터를 JSON 방식으로 주고 받음
 - JSON 데이터로 변환하기 위한 jackson-databind 라이브러리를 pom.xml에 추가
 - 자바 인스턴스를 JSON 타입의 문자열로 변환하기 위한 gson 라이브러리 추가
@@ -193,6 +196,8 @@ public Page<PostResponseDto> listTopTen() {
 - seq_reply를 시퀀스로 지정하여 seq_reply.nextval을 활용하여 댓글 번호 자동 증가 처리
 - 댓글 삭제, 수정, 등록 interface 메서드의 경우 int형을 반환값으로 설정
 - 댓글의 페이징 처리를 위하여 댓글 목록 interface메서드의 파라미터 값으로 Criteria객체와 bno값을 지정(@Param을 활용하여 2개의 파라미터 지정)
+- BoardMapper에 댓글 수를 업데이트하는 updateReplyCnt() 메서드를 추가
+- BoardMappe의 updateReplyCnt()메서드 파라미터 값으로 게시물 번호와 증감값을 받을 수 있는 파라미터를 지정
 
 
 ### 8.2. Controller :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/ReplyController.java)
@@ -229,12 +234,29 @@ public Page<PostResponseDto> listTopTen() {
   - produces를 이용하여 처리 결과가 정상적으로 되었는지 문자열로 결과 반환
   - @DeleteMapping 어노테이션을 지정하여 DELETE 방식으로 전송하도록 지정
 
+### 8.3. ReplyPageDTO :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/ReplyPageDTO.java)
+- 게시물 당 전체 댓글 수와 댓글목록 리스트 데이터를 받기 위한 객체
+- @AllArgsConstructor 어노테이션을 지정하여 replyCnt와 list를 생성자의 파라미터로 처리
+
+### 8.4. Service :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/service/ReplyServiceImpl.java)
+- 댓글 목록을 출력하는 getListPage의 반환값으로 댓글목록 데이터와 댓글 수 데이터를 갖고 있는 ReplyPageDTO 객체를 지정
+- 반환값을 ReplyPageDTO로 생성하여 파라미터로 댓글 목록과 댓글수를 출력하는 Mapper 메서드인 getCountByBno()와 getListWithPaging()메서드를 지정
+- 트랜잭션을 위한 BoardMapper와 ReplyMapper의존성을 추가
+- 댓글 등록과 삭제를 담당하는 메서드는 @Transactional 어노테이션 지정
+- 댓글 삭제 메서드의 경우 updateReplyCnt()메서드의 amount 파라미터에 -1 지정
+- 댓글 등록 메서드의 경우 updateReplyCnt()메서드의 amount 파라미터에 +1 지정
+
+### 8.5. BoardVO :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/BoardVO.java)
+- 댓글 수를 의미하는 인스턴스 변수인 replyCnt 변수 추가
+- 첨부파일은 실제 서버가 동작하는 머신 내에 있는 폴더에 업로드(임시 업로드 파일을 저장할 폴더 생성)
+
 </div>
 </details>
 
 </br>
 
 ## 9. 파일 업로드
+- Servlet 3.0이상부터 지원하는 자체적인 파일 업로드 API 활용
 
 </div>
 </details>
