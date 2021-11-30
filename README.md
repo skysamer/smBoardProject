@@ -248,7 +248,6 @@ public Page<PostResponseDto> listTopTen() {
 
 ### 8.5. BoardVO :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/BoardVO.java)
 - 댓글 수를 의미하는 인스턴스 변수인 replyCnt 변수 추가
-- 첨부파일은 실제 서버가 동작하는 머신 내에 있는 폴더에 업로드(임시 업로드 파일을 저장할 폴더 생성)
 
 </div>
 </details>
@@ -257,6 +256,14 @@ public Page<PostResponseDto> listTopTen() {
 
 ## 9. 파일 업로드
 - Servlet 3.0이상부터 지원하는 자체적인 파일 업로드 API 활용
+- 첨부파일은 실제 서버가 동작하는 머신 내에 있는 폴더에 업로드(임시 업로드 파일을 저장할 폴더 생성)
+- web.xml의 servlet태그에 multipart-config 태그 추가(업로드 공간 지정)
+- 스프링 업로드 처리를 위해 servlet-context.xml 파일에 MultipartResolver객체의 빈을 등록
+
+### 9.1. UploadController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/UploadController.java)
+- 파일 업로드 처리를 위한 uploadAjaxPost()메서드를 생성
+- 업로드 방식은 Ajax 및 POST로 지정하고, 하고, MultipartFile의 배열 객체를 파라미터값으로 지정
+
 
 </div>
 </details>
