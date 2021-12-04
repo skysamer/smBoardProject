@@ -259,10 +259,16 @@ public Page<PostResponseDto> listTopTen() {
 - 첨부파일은 실제 서버가 동작하는 머신 내에 있는 폴더에 업로드(임시 업로드 파일을 저장할 폴더 생성)
 - web.xml의 servlet태그에 multipart-config 태그 추가(업로드 공간 지정)
 - 스프링 업로드 처리를 위해 servlet-context.xml 파일에 MultipartResolver객체의 빈을 등록
+- 이미지 파일의 섬네일 생성을 위해 thumbnailator 라이브러리 추가
+- 파잏 타입 체크를 위한 tika-parsers 라이브러리 추가
 
 ### 9.1. UploadController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/UploadController.java)
 - 파일 업로드 처리를 위한 uploadAjaxPost()메서드를 생성
 - 업로드 방식은 Ajax 및 POST로 지정하고, 하고, MultipartFile의 배열 객체를 파라미터값으로 지정
+- File객체를 생성하여 파일을 저장할 폴더 경로와 파일 이름을 지정하고 transferTo()메서드를 사용하여 지정한 경로에 파일을 저장
+- getFolder() 메서드를 private로 생성하여 년/월/일 단위의 오늘 날짜 폴더 경로를 문자열로 생성
+- upload 폴더에 생성된 날짜 경로의 존재 여부를 확인하고 없으면 mkdirs() 메서드를 활용하여 오늘 날짜 경로의 폴더 생성 및 생성된 폴더에 파일 저장
+- UUID 클래스의 randomUuid() 메서드를 이용하여 중복파일을 구분할 수 있도록 파일이름 앞에 붙임
 
 
 </div>
