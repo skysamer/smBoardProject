@@ -291,6 +291,9 @@ public Page<PostResponseDto> listTopTen() {
   - HttpHeaders 객체를 이용해서 다운로드 시 파일의 이름을 처리하도록 작성
   - header를 추가할 때, MIME타입을 octec-stream으로 지정하고 다운로드 시 저장되는 이름은 Content-Disposition을 이용해서 지정
 
+- **첨부 파일 삭제**
+  - 
+
 </div>
 </details>
 
