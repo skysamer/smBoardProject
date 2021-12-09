@@ -261,6 +261,7 @@ public Page<PostResponseDto> listTopTen() {
 - 스프링 업로드 처리를 위해 servlet-context.xml 파일에 MultipartResolver객체의 빈을 등록
 - 이미지 파일의 섬네일 생성을 위해 thumbnailator 라이브러리 추가
 - 파잏 타입 체크를 위한 tika-parsers 라이브러리 추가
+- BoardVO 객체에 BoardAttachVO 객체의 list형을 추가
 
 ### 9.1. UploadController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/UploadController.java)
 
@@ -292,7 +293,40 @@ public Page<PostResponseDto> listTopTen() {
   - header를 추가할 때, MIME타입을 octec-stream으로 지정하고 다운로드 시 저장되는 이름은 Content-Disposition을 이용해서 지정
 
 - **첨부 파일 삭제**
-  - 
+  - deleteFile() 메서드를 작성하여 파라미터로 파일이름과 파일타입을 지정
+  - 파일이름의 경로를 File객체로 생성하고 File.delete()메서드를 활용하여 지정된 경로의 파일을 서버내에서 삭제
+  - 파일 타입이 image인경우, 섬네일 파일도 같이 존재하므로 파일이름에 's_'접두어를 붙여 섬네일 파일까지 같이 삭제
+
+### 9.2. BoardAttachMapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/BoardAttachMapper.xml)
+- 첨부파일의 수정이라는 개념이 존재하지 않으므로 수정작업을 제외한 등록, 삭제, 조회 기능을 추가
+- 특정 게시물의 번호로 첨부파일을 찾는 findByBno()메서드안에 관련 쿼리를 작성
+
+- **게시물 및 첨부파일 삭제** 
+  - uuid를 기준으로 특정 첨부파일을 삭제하는 delete()메서드와 bno를 기준으로 특정 게시물의 첨부파일 목록을 전부 삭제하는 deleteAll()메서드 작성
+
+### 9.3. BoardService :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/service/BoardServiceImpl.java)
+- BoardMapper와 BoardAttachMapper 두 개 인터페이스의 의존성을 주입
+
+- **게시글에 첨부파일 등록** 
+  - 게시물 등록은 tbl_board 테이블과 tbl_attach 테이블 모두 insert가 진행되어야 하므로 register()메서드에 @Transactional 어노테이션을 추가
+  - BoardMapper에서 insert 작업 수행 후, 등록한 첨부파일이 존재할 경우 BoardVO 객체의 attachList에 bno컬럼값을 등록한 후, 첨부파일 정보 insert
+
+- **등록된 첨부파일 조회** 
+  - getAttachList()메서드를 작성하여 게시물 번호별로 첨부파일 목록을 조회할 수 있도록 지정한다.
+
+- **게시글 삭제** 
+  - 첨부파일 삭제와 게시글 삭제가 같이 처리되도록 @Transactional 어노테이션 지정
+  - BoardAttachMapper의 deleteAll() 메서드 호출
+
+### 9.4. BoardController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/BoardController.java)
+
+- **등록된 첨부파일 조회** 
+  - getAttachList()메서드를 작성하고 파라미터값으로 글번호값을 지정하여 특정 게시물의 첨부파일 목록을 조회할 수 있도록 작성
+  - @ResponseBody 어노테이션을 지정하여 json 데이터를 반환하도록 설정
+
+- **게시물 및 첨부파일 삭제** 
+  - 데이터베이스의 첨부파일 데이터를 삭제한 후, 폴더에서의 파일 삭제 진행
+
 
 </div>
 </details>
