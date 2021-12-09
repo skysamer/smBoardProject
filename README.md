@@ -263,20 +263,33 @@ public Page<PostResponseDto> listTopTen() {
 - 파잏 타입 체크를 위한 tika-parsers 라이브러리 추가
 
 ### 9.1. UploadController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/UploadController.java)
-- 파일 업로드 처리를 위한 uploadAjaxPost()메서드를 생성
-- 업로드 방식은 Ajax 및 POST로 지정하고, 하고, MultipartFile의 배열 객체를 파라미터값으로 지정
-- File객체를 생성하여 파일을 저장할 폴더 경로와 파일 이름을 지정하고 transferTo()메서드를 사용하여 지정한 경로에 파일을 저장
-- getFolder() 메서드를 private로 생성하여 년/월/일 단위의 오늘 날짜 폴더 경로를 문자열로 생성
-- upload 폴더에 생성된 날짜 경로의 존재 여부를 확인하고 없으면 mkdirs() 메서드를 활용하여 오늘 날짜 경로의 폴더 생성 및 생성된 폴더에 파일 저장
-- UUID 클래스의 randomUuid() 메서드를 이용하여 중복파일을 구분할 수 있도록 파일이름 앞에 붙임
-- 파일 타입 체크를 위한 checkTypeImage() 메서드를 생성
-- Tika 클래스의 detect() 메서드를 이용하여 파라미터로 받은 파일의 타입 체크 후, image 타입일 경우 true를 반환하고 아닐 경우 false를 반환
-- 파일이 이미지일 경우 Thumbnailator.createThumbnail()를 이용하여 섬네일 이미지 생성 및 FileOutputStream 객체를 이용하여 접두어로 s_를 붙인 섬네일 파일 이름 생성
-- uploadAjaxPost() 메서드의 경우 BoardAttachVO의 list를 반환하는 ResponseEntity 객체로 반환값 지정하고 JSON 데이터를 반환하도록 설정
-- getFile() 메서드를 생성하고 반환값을 Byte 배열로 지정 및 파라미터 값으로 파일이름을 문자열로 받도록 지정
-- probeContentType() 메서드를 이용해서 섬네일 전송 시 적절한 MIME 타입 데이터를 Http의 헤더 메시지에 포함할 수 있도록 처리
-- FileCopyUtils.copyToByteArray()를 이용하여 섬네일 이미지를 헤더 메시지와 함께 전송
 
+- **파일 업로드** 
+  - 파일 업로드 처리를 위한 uploadAjaxPost()메서드를 생성
+  - 업로드 방식은 Ajax 및 POST로 지정하고, 하고, MultipartFile의 배열 객체를 파라미터값으로 지정
+  - File객체를 생성하여 파일을 저장할 폴더 경로와 파일 이름을 지정하고 transferTo()메서드를 사용하여 지정한 경로에 파일을 저장
+  - UUID 클래스의 randomUuid() 메서드를 이용하여 중복파일을 구분할 수 있도록 파일이름 앞에 붙임
+  - 파일이 이미지일 경우 Thumbnailator.createThumbnail()를 이용하여 섬네일 이미지 생성 및 FileOutputStream 객체를 이용하여 접두어로 s_를 붙인 섬네일 파일 이름 생성
+  - uploadAjaxPost() 메서드의 경우 BoardAttachVO의 list를 반환하는 ResponseEntity 객체로 반환값 지정하고 JSON 데이터를 반환하도록 설정
+
+- **현재 날짜 폴더 생성** 
+  - getFolder() 메서드를 private로 생성하여 년/월/일 단위의 오늘 날짜 폴더 경로를 문자열로 생성
+  - upload 폴더에 생성된 날짜 경로의 존재 여부를 확인하고 없으면 mkdirs() 메서드를 활용하여 오늘 날짜 경로의 폴더 생성 및 생성된 폴더에 파일 저장
+
+- **파일 타입 체크** 
+  - 파일 타입 체크를 위한 checkTypeImage() 메서드를 생성
+  - Tika 클래스의 detect() 메서드를 이용하여 파라미터로 받은 파일의 타입 체크 후, image 타입일 경우 true를 반환하고 아닐 경우 false를 반환
+
+- **파일 섬네일 생성**
+  - getFile() 메서드를 생성하고 반환값을 Byte 배열로 지정 및 파라미터 값으로 파일이름을 문자열로 받도록 지정
+  - probeContentType() 메서드를 이용해서 섬네일 전송 시 적절한 MIME 타입 데이터를 Http의 헤더 메시지에 포함할 수 있도록 처리
+  - FileCopyUtils.copyToByteArray()를 이용하여 섬네일 이미지를 헤더 메시지와 함께 전송
+
+- **파일 다운로드**
+  - downloadFile() 메서드를 생성하여 반환값으로 Resources 객체 타입의 ResponseEntity객체로 설정 및 produces로 모든 바이너리 데이터를 의미하는 APPLICATION_OCTEC_STREAM_VALUE를 지정
+  - FileSystemResource 객체를 생성하여 파일 절대경로 지정
+  - HttpHeaders 객체를 이용해서 다운로드 시 파일의 이름을 처리하도록 작성
+  - header를 추가할 때, MIME타입을 octec-stream으로 지정하고 다운로드 시 저장되는 이름은 Content-Disposition을 이용해서 지정
 
 </div>
 </details>
