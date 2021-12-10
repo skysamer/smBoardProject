@@ -341,8 +341,10 @@ public Page<PostResponseDto> listTopTen() {
 - getListLink()메서드를 생성하여 게시물 삭제 후 페이지 번호나 검색조건을 유지하면서 이동하도록 준비
 - UriComponentsBuilder 객체를 생성하고 queryParam()메서드를 사용하여 페이지번호, 검색조건 등의 uri파라미터를 처리할 수 있도록 작성
 
-### 9.6. FileCheckTask :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/Criteria.java)
-- ge
+### 9.6. FileCheckTask :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/task/FileCheckTask.java)
+- 서버에 잘못 업로드된 파일을 주기적으로 삭제하기 위한 클래스
+- 오늘 날짜가 아닌 파일들을 대상으로 접근하도록 설정
+- 스케줄러를 구성하기 위해 Quartz 라이브러리 추가
 
 
 </div>
