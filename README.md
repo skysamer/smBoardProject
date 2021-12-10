@@ -260,7 +260,7 @@ public Page<PostResponseDto> listTopTen() {
 - web.xml의 servlet태그에 multipart-config 태그 추가(업로드 공간 지정)
 - 스프링 업로드 처리를 위해 servlet-context.xml 파일에 MultipartResolver객체의 빈을 등록
 - 이미지 파일의 섬네일 생성을 위해 thumbnailator 라이브러리 추가
-- 파잏 타입 체크를 위한 tika-parsers 라이브러리 추가
+- 파 타입 체크를 위한 tika-parsers 라이브러리 추가
 - BoardVO 객체에 BoardAttachVO 객체의 list형을 추가
 
 ### 9.1. UploadController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/UploadController.java)
@@ -318,6 +318,11 @@ public Page<PostResponseDto> listTopTen() {
   - 첨부파일 삭제와 게시글 삭제가 같이 처리되도록 @Transactional 어노테이션 지정
   - BoardAttachMapper의 deleteAll() 메서드 호출
 
+- **게시글 수정** 
+  - modify() 메서드에서 attachMapper의 deleteAll()메서드로 기존 첨부파일 목록을 모두 삭제
+  - 이후 update() 메서드로 tbl_board 테이블 관련 내용을 수정
+  - 파라미터로 받은 boardVO 객체의 attachList값을 foreach()로 순회하면서 attachMapper로 insert 작업 수행
+
 ### 9.4. BoardController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/BoardController.java)
 
 - **등록된 첨부파일 조회** 
@@ -326,6 +331,18 @@ public Page<PostResponseDto> listTopTen() {
 
 - **게시물 및 첨부파일 삭제** 
   - 데이터베이스의 첨부파일 데이터를 삭제한 후, 폴더에서의 파일 삭제 진행
+  - deleteFiles() 메서드를 private로 작성하고, BoardAttachVO의 list객체를 파라미터값으로 지정
+  - attachList를 foreach()로 순회하도록 지정하고, Paths.get()를 이용하여 각 파일의 절대경로를 생성
+  - deleteIfExists() 메서드를 이용하여 해당 절대경로의 파일 삭제
+  - probeContentType() 메서드를 이용하여 해당 파일이 이미지인지 체크하고 이미지일경우, Paths.get()으로 섬네일 파일의 절대경로를 생성 및 delete()메서드로 파일 삭제
+  - remove()메서드에서 데이터베이스의 게시물과 첨부파일 데이터 삭제에 성공하면, deleteFiles() 메서드를 내부적으로 호출하여 폴더내의 파일 삭제
+
+### 9.5. Criteria :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/Criteria.java)
+- getListLink()메서드를 생성하여 게시물 삭제 후 페이지 번호나 검색조건을 유지하면서 이동하도록 준비
+- UriComponentsBuilder 객체를 생성하고 queryParam()메서드를 사용하여 페이지번호, 검색조건 등의 uri파라미터를 처리할 수 있도록 작성
+
+### 9.6. FileCheckTask :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/Criteria.java)
+- ge
 
 
 </div>
