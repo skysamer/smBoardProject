@@ -300,6 +300,7 @@ public Page<PostResponseDto> listTopTen() {
 ### 9.2. BoardAttachMapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/BoardAttachMapper.xml)
 - 첨부파일의 수정이라는 개념이 존재하지 않으므로 수정작업을 제외한 등록, 삭제, 조회 기능을 추가
 - 특정 게시물의 번호로 첨부파일을 찾는 findByBno()메서드안에 관련 쿼리를 작성
+- 잘못 업로드된 파일을 삭제하기 위해 어제날짜에 해당하는 파일목록을 불러오는 쿼리를 작성
 
 - **게시물 및 첨부파일 삭제** 
   - uuid를 기준으로 특정 첨부파일을 삭제하는 delete()메서드와 bno를 기준으로 특정 게시물의 첨부파일 목록을 전부 삭제하는 deleteAll()메서드 작성
@@ -345,6 +346,24 @@ public Page<PostResponseDto> listTopTen() {
 - 서버에 잘못 업로드된 파일을 주기적으로 삭제하기 위한 클래스
 - 오늘 날짜가 아닌 파일들을 대상으로 접근하도록 설정
 - 스케줄러를 구성하기 위해 Quartz 라이브러리 추가
+- 의존성 주입한 attachMapper 객체로 어제날짜에 해당하는 파일 목록을 가져옴
+- @Component 어노테이션을 지정하여 객체를 자동으로 bean 등록
+
+- **하루 전 날짜 불러오기** 
+  - getFolderYesterday() 메서드를 private로 작성
+  - Calendar 객체를 생성하고, add() 메서드를 이용하여 현재 날짜의 하루전 날짜를 지정
+  - File.separator를 이용하여 년/월/일을 파일 구분자로 나누어 반환
+
+- **하루 전 날짜목록 파일 삭제** 
+  - checkFiles() 메서드를 작성
+  - cron 속성을 부여하기 위해 파일을 체크하는 메서드에 @Scheduled 어노테이션 지정하고 cron 속성으로 매일 새벽 2시에 동작하도록 지정
+  - Mapper.getOldFiles()값을 불러오고 BoardAttachVO객체의 list형으로 지정
+  - 가져온 BoardAttachVO 각 값들을 stream.map() 메서드와 Paths.get() 메서드를 이용하여 각 파일의 절대경로 값을 생성하고 Path 객체타입으로 변환
+  - stream.filter() 메서드를 이용하여 이미지 파일인 경우에 섬네일 파일의 절대경로를 생성하고 fileListPath 객체에 추가
+  - Path.get() 메서드로 어제날짜 폴더 디렉터리의 절대경로를 생성하고 toFile() 메서드를 이용하여 File 객체로 변환
+  - listFiles() 메서드를 이용하여 해당 디렉터리의 모든 파일목록을 File객체의 배열로 생성
+  - delete() 메서드로 해당 파일들을 삭제
+
 
 
 </div>
