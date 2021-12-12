@@ -372,6 +372,15 @@ public Page<PostResponseDto> listTopTen() {
 </br>
 
 ## 10. 로그인 처리
+- Spring Security를 이용하기 위해 시큐리티관련 라이브러리를 pom.xml에 추가
+- security-context.xml을 생성하여 단독으로 시큐리티 관련 설정을 작업할 수 있도록 작성
+- web.xml에 springSecurityFilterChain이라는 빈의 필터를 지정하고, security-context.xml파일을 로딩하도록 작성
+- 게시글 목록의 경우 누구나 조회할 수 있도록 설정
+- 게시글 등록, 삭제, 수정의 경우 시큐리티에 의해 제어되도록 설정
+
+### 10.1. CommonController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/CommonController.java)
+- 로그인, 로그아웃, 접근거부 화면을 처리하기 위한 컨트롤러 객체
+- 
 
 </div>
 </details>
