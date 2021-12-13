@@ -379,8 +379,13 @@ public Page<PostResponseDto> listTopTen() {
 - 게시글 등록, 삭제, 수정의 경우 시큐리티에 의해 제어되도록 설정
 
 ### 10.1. CommonController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/CommonController.java)
-- 로그인, 로그아웃, 접근거부 화면을 처리하기 위한 컨트롤러 객체
-- 
+- 로그인, 로그아웃, 접근제한 화면을 처리하기 위한 Controller 객체
+- CustomAccessDeniedHandler에서 redirect하는 url("/accessError")을 받아 접근 제한 페이지를 처리
+- Authentication 객체 및 Model 객체를 파라미터로 받아서 model값을 접근제한 페이지에 전송
+
+### 10.2. CustomAccessDeniedHandler :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/CommonController.java)
+- 접근 제한에 걸리는 경우 redirect하기 위해 AccessDeniedHandler 인터페이스를 상속하여 구현한 Handler 객체
+- security-context.xml에서 error-page대신 이 객체를 bean으로 등록해서 사용
 
 </div>
 </details>
