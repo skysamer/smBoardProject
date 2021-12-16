@@ -382,10 +382,17 @@ public Page<PostResponseDto> listTopTen() {
 - 로그인, 로그아웃, 접근제한 화면을 처리하기 위한 Controller 객체
 - CustomAccessDeniedHandler에서 redirect하는 url("/accessError")을 받아 접근 제한 페이지를 처리
 - Authentication 객체 및 Model 객체를 파라미터로 받아서 model값을 접근제한 페이지에 전송
+- security-context.xml에서 security:form-login 태그를 작성하고, 로그인 처리를 구현하는 메서드를 get방식으로 접근하도록 @GetMapping 어노테이션을 지정
+- 로그인 메서드는 에러 메시지와 로그아웃 메시지를 파라미터로 받을 수 있도록 작성
 
 ### 10.2. CustomAccessDeniedHandler :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/CommonController.java)
 - 접근 제한에 걸리는 경우 redirect하기 위해 AccessDeniedHandler 인터페이스를 상속하여 구현한 Handler 객체
 - security-context.xml에서 error-page대신 이 객체를 bean으로 등록해서 사용
+
+### 10.3. CustomLoginSuccessHandler :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/security/CustomLoginSuccessHandler.java)
+- 로그인 성공 이후 동작을 제어하기 위해 AuthenticationSuccessHandler 인터페이스를 상속한 객체
+- Authentication 객체를 파라미터값으로 받아서 사용자 별 권한을 roleNames 리스트에 저장하고, 유저 혹은 관리자일 경우, redirect를 이용하여 글 등록 페이지로 이동 수 있도록 작성
+
 
 </div>
 </details>
