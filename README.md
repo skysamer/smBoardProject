@@ -377,6 +377,7 @@ public Page<PostResponseDto> listTopTen() {
 - web.xml에 springSecurityFilterChain이라는 빈의 필터를 지정하고, security-context.xml파일을 로딩하도록 작성
 - 게시글 목록의 경우 누구나 조회할 수 있도록 설정
 - 게시글 등록, 삭제, 수정의 경우 시큐리티에 의해 제어되도록 설정
+- 
 
 ### 10.1. CommonController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/CommonController.java)
 - 로그인, 로그아웃, 접근제한 화면을 처리하기 위한 Controller 객체
@@ -384,6 +385,8 @@ public Page<PostResponseDto> listTopTen() {
 - Authentication 객체 및 Model 객체를 파라미터로 받아서 model값을 접근제한 페이지에 전송
 - security-context.xml에서 security:form-login 태그를 작성하고, 로그인 처리를 구현하는 메서드를 get방식으로 접근하도록 @GetMapping 어노테이션을 지정
 - 로그인 메서드는 에러 메시지와 로그아웃 메시지를 파라미터로 받을 수 있도록 작성
+- 로그아웃 메서드역시 get방식으로 접근하기 위해 @GetMapping 어노테이션을 지정하고 반환값은 void로 지정
+- security-context.xml에 security:logout 태그를 작성하여 시큐리티 내부적으로 로그아웃을 처리하도록 설정
 
 ### 10.2. CustomAccessDeniedHandler :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/CommonController.java)
 - 접근 제한에 걸리는 경우 redirect하기 위해 AccessDeniedHandler 인터페이스를 상속하여 구현한 Handler 객체
@@ -391,6 +394,7 @@ public Page<PostResponseDto> listTopTen() {
 
 ### 10.3. CustomLoginSuccessHandler :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/security/CustomLoginSuccessHandler.java)
 - 로그인 성공 이후 동작을 제어하기 위해 AuthenticationSuccessHandler 인터페이스를 상속한 객체
+- security-context.xml에 CustomLoginSuccessHandler 객체를 빈으로 등록
 - Authentication 객체를 파라미터값으로 받아서 사용자 별 권한을 roleNames 리스트에 저장하고, 유저 혹은 관리자일 경우, redirect를 이용하여 글 등록 페이지로 이동 수 있도록 작성
 
 
