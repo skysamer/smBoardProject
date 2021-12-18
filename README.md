@@ -377,7 +377,7 @@ public Page<PostResponseDto> listTopTen() {
 - web.xml에 springSecurityFilterChain이라는 빈의 필터를 지정하고, security-context.xml파일을 로딩하도록 작성
 - 게시글 목록의 경우 누구나 조회할 수 있도록 설정
 - 게시글 등록, 삭제, 수정의 경우 시큐리티에 의해 제어되도록 설정
-- 
+- MenberVO객체와 AuthVO객체를 생성하고, MenberVO 객체는 여러 개의 사용자 권한을 가질 수 있는 구조로 설계
 
 ### 10.1. CommonController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/CommonController.java)
 - 로그인, 로그아웃, 접근제한 화면을 처리하기 위한 Controller 객체
@@ -396,6 +396,9 @@ public Page<PostResponseDto> listTopTen() {
 - 로그인 성공 이후 동작을 제어하기 위해 AuthenticationSuccessHandler 인터페이스를 상속한 객체
 - security-context.xml에 CustomLoginSuccessHandler 객체를 빈으로 등록
 - Authentication 객체를 파라미터값으로 받아서 사용자 별 권한을 roleNames 리스트에 저장하고, 유저 혹은 관리자일 경우, redirect를 이용하여 글 등록 페이지로 이동 수 있도록 작성
+
+### 10.4. MemberMapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/MemberMapper.xml)
+- 
 
 
 </div>
