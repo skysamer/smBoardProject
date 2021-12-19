@@ -133,20 +133,6 @@
 - 다음 페이지는 페이지 끝번호가 최종 페이지 끝번호보다 작을 경우만 생성되도록 지정
 
 
-<details>
-<summary><b>기존 코드</b></summary>
-<div markdown="1">
-
-~~~java
-
-public Page<PostResponseDto> listTopTen() {
-
-    PageRequest pageRequest = PageRequest.of(0, 10, Sort.Direction.DESC, "rankPoint", "likeCnt");
-    return postRepository.findAll(pageRequest).map(PostResponseDto::new);
-}
-
-~~~
-
 </div>
 </details>
 
@@ -378,6 +364,9 @@ public Page<PostResponseDto> listTopTen() {
 - 게시글 목록의 경우 누구나 조회할 수 있도록 설정
 - 게시글 등록, 삭제, 수정의 경우 시큐리티에 의해 제어되도록 설정
 - MenberVO객체와 AuthVO객체를 생성하고, MenberVO 객체는 여러 개의 사용자 권한을 가질 수 있는 구조로 설계
+- 하나의 MemberVO가 여러개의 AuthVO를 가지는 1:N 관계로 설계
+- security-context.xml에 security:remember-me 태그를 작성하고 WAS에서 발행하는 쿠키이름을 지정하여 데이터베이스를 활용한 자동로그인 기능 구현
+- web.xml에 인코딩 설정을 먼저 하고, 스프링 시큐리티를 적용하여 한글 깨짐 현상 처리
 
 ### 10.1. CommonController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/CommonController.java)
 - 로그인, 로그아웃, 접근제한 화면을 처리하기 위한 Controller 객체
@@ -398,7 +387,31 @@ public Page<PostResponseDto> listTopTen() {
 - Authentication 객체를 파라미터값으로 받아서 사용자 별 권한을 roleNames 리스트에 저장하고, 유저 혹은 관리자일 경우, redirect를 이용하여 글 등록 페이지로 이동 수 있도록 작성
 
 ### 10.4. MemberMapper :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/resources/com/sm/mapper/MemberMapper.xml)
-- 
+- tbl_member 테이블과 tbl_member_auth 테이블을 조인하기 위해 ResultMap 태그를 작성하고 MemberVO의 ResultMap이 내부적으로 AuthVO의 ResultMap을 사용하도록 작성
+
+### 10.5. CustomUserDetailService :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/security/CustomUserDetailService.java)
+- 스프링 시큐리티의 UserDetailsService 인터페이스를 상속하여 구현
+- MemberMapper 객체의 의존성을 주입받아서 구체적으로 구현
+- security-context.xml에 security:authentication-provider 속성을 이용하여 CustomUserDetailService 객체를 빈으로 등록
+- mapper.read()의 반환값을 MemberVO 객체타입으로 받고, CustomUser 객체로 MemberVO객체를 메서드의 반환값인 UserDetails 타입으로 변환
+
+### 10.6. CustomUser :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/domain/CustomUser.java)
+- 스프링 시큐리티의 User 클래스를 상속하여 작성한 객체
+- CustomUserDetailService 클래스의 loadUserByUsername() 메서드의 반환값인 UserDetails 인터페이스타입으로 MemberVO 객체를 변환하기 위해 작성
+- 생성자 메서드를 만들어서 변환하고, AuthVO 객체의 경우 stream().map()을 이용하여 SimpleGrantedAuthority 객체로 변환 
+
+### 10.7. BoardController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/BoardController.java)
+- 글 등록 메서드에 @PreAuthorize 어노테이션을 지정하고 isAuthenticated() 표현식을 이용하여 로그인이 성공한 사용자만 등록을 할 수 있도록 처리
+- 글 수정 메서드에도 @PreAuthorize 어노테이션을 지정하고, principal.username 표현식을 작성하여 글 작성자의 아이디와 일치하는 경우에만 글을 수정할 수 있도록 작성
+- 글 삭제 메서드에도 @PreAuthorize 어노테이션 및 principal.username 표현식을 작성하고 writer 파리미터를 추가하여 @PreAuthorize 어노테이션에서 작성자를 검사할 수 있도록 작성
+
+### 10.8. UploadController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/UploadController.java)
+- 첨부파일 등록 및 삭제 메서드에 @PreAuthorize 어노테이션을 지정하고, isAuthenticated() 표현식으로 로그인한 사용자만 할 수 있도록 제한
+
+### 10.9. ReplyController :pushpin: [코드 확인](https://github.com/skysamer/smBoardProject/blob/main/src/main/java/com/sm/controller/ReplyController.java)
+- 댓글 등록, 수정, 삭제 메서드에 @PreAuthorize 어노테이션을 지정
+- 댓글 등록의 경우, isAuthenticated() 표현식으로 로그인 성공한 사용자만 등록을 할 수 있도록 처리
+- 댓글 수정 및 삭제의 경우 principal.username 표현식으로 작성자가 일치하는 경우에만 처리할 수 있도록 작성
 
 
 </div>
