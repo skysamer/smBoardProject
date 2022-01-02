@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sm.mapper.BoardHateMapper">
+	
+	<update id="updateHate" parameterType="Long">
+		update tbl_board
+		set hatehit = hatehit + 1
+		where bno=#{bno}
+	</update>
+	
+	<update id="updateHateCancel">
+		update tbl_board
+		set hatehit = hatehit - 1
+		where bno=#{bno}
+	</update>
+	
+	<insert id="insertHate">
+		insert into tbl_board_hate(hateno, bno, userid)
+		values((select nvl(max(hateno), 0) + 1 from tbl_board_hate), #{bno}, #{userid}) 
+	</insert>
+	
+	<delete id="deleteHate">
+		delete from tbl_board_hate
+		where bno=#{bno} and userid=#{userid}
+	</delete>
+	
+	<select id="hateCheck" resultType="int">
+		select count(*)
+		from tbl_board_hate
+		where bno=#{bno} and userid=#{userid}
+	</select>
+	
+	<update id="updateHateCheckCancel">
+		update tbl_board_hate
+		set hatecheck=0
+		where bno=#{bno} and userid=#{userid}
+	</update>
+	
+	<update id="hatePointPlus">
+		update tbl_member 
+		set member_point_hate = member_point_hate + 1
+		where userid=#{userid}
+	</update>
+	
+	<update id="hatePointMinus">
+		update tbl_member
+		set member_point_hate = member_point_hate - 1
+		where userid=#{userid}
+	</update>
+	
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sm.mapper.BoardLikeMapper">
+
+	<!-- 게시글 추천수 -->
+	<update id="updateLike" parameterType="Long">
+		update tbl_board set 
+		LIKEHIT = LIKEHIT+1
+		where BNO = #{bno}
+	</update>
+	
+	
+	<!-- 게시글 추천수취소 -->
+	<update id="updateLikeCancel" parameterType="Long">
+		update tbl_board set 
+		LIKEHIT = LIKEHIT - 1
+		where BNO = #{bno}
+	</update>
+	
+	
+	<!-- 게시글 추천 시 Like 테이블에 insert -->
+	<insert id="insertLike">
+		insert into tbl_board_like(likeno, bno, userid) 
+		values((SELECT NVL(MAX(likeno), 0) + 1 FROM tbl_board_like) ,#{bno} ,#{userid})
+	</insert>
+	
+	
+	<!-- 게시글 추천취소 시 delete -->
+	<delete id="deleteLike">
+		delete from tbl_board_like where BNO = #{bno} and userid = #{userid}
+	</delete>
+	
+	
+	<!-- 게시글 추천취소 시 다시 0  -->
+	<update id="updateLikeCheckCancel">
+		update tbl_board_like set LIKECHECK = 0
+		where BNO = #{bno} and userid = #{userid}
+	</update>
+	
+	
+	<!-- 게시글 추천 중복방지 select문 -->
+	<select id="likeCheck" resultType="int">
+		select count(*) from tbl_board_like where BNO = #{bno} and userid = #{userid} 
+	</select>
+	
+	
+	<!-- 게시글 추천 시 회원포인트 증가 -->
+	<update id="memberPointPlus">
+		update tbl_member set MEMBER_POINT = MEMBER_POINT + 1 where userid = #{userid}
+	</update>
+	
+	
+	<!-- 게시글 추천취소 시 회원포인트 감소 -->
+	<update id="memberPointDown">
+		update tbl_member set MEMBER_POINT = MEMBER_POINT - 1 where userid = #{userid}
+	</update>
+	
+</mapper>

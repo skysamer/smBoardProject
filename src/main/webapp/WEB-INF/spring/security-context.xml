@@ -11,11 +11,10 @@
 		
 		<bean id="customUserDetailService" class="com.sm.security.CustomUserDetailService"></bean>
 		
+		
 		<security:http auto-config="true" use-expressions="true">
 		
 			<security:intercept-url pattern="/board/list" access="permitAll"/>
-		
-			<security:intercept-url pattern="/board/register" access="hasRole('ROLE_MEMBER')"/>
 		
 			<security:form-login login-page="/customLogin"/>
 			
@@ -27,6 +26,7 @@
 			
 		</security:http>
 		
+		
 		<security:authentication-manager>
 		
 			<security:authentication-provider user-service-ref="customUserDetailService">
@@ -36,5 +36,6 @@
 			</security:authentication-provider>
 			
 		</security:authentication-manager>
+		
 
 </beans>

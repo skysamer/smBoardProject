@@ -1,6 +1,7 @@
 package com.sm.controller;
 
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.util.List;
@@ -22,6 +23,8 @@ import com.sm.domain.BoardAttachVO;
 import com.sm.domain.BoardVO;
 import com.sm.domain.Criteria;
 import com.sm.domain.PageDTO;
+import com.sm.service.BoardHateService;
+import com.sm.service.BoardLikeService;
 import com.sm.service.BoardService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -31,8 +34,15 @@ import lombok.extern.log4j.Log4j;
 @RequestMapping("/board/*")
 @AllArgsConstructor
 public class BoardController {
+	
 	@Autowired
 	private BoardService service;
+	
+	@Autowired
+	private BoardLikeService likeService;
+	
+	@Autowired
+	private BoardHateService hateService;
 	
 	@GetMapping("/list")
 	public void list(Criteria cri, Model model) {
@@ -101,7 +111,7 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
-	//메모리에 있는 파일 삭제
+	//하드디스크에 있는 파일 삭제
 	private void deleteFiles(List<BoardAttachVO> attachList) {
 		if(attachList==null || attachList.size()==0) {
 			return;
@@ -126,6 +136,8 @@ public class BoardController {
 		});
 	}
 	
+	
+	// 게시글 삭제
 	@PreAuthorize("principal.username == #writer")
 	@PostMapping("/remove")
 	public String remove(@RequestParam("bno") Long bno, RedirectAttributes rttr, @ModelAttribute("cri") Criteria cri, String writer) {
@@ -140,6 +152,67 @@ public class BoardController {
 		}
 		
 		return "redirect:/board/list"+cri.getListLink();
+	}
+	
+	// 게시글 좋아요
+	@ResponseBody
+	@PostMapping(value = "/updateLike")
+	public int updateLike(@RequestParam("bno") Long bno, Principal principal) {
+		log.info(principal);
+		
+		if(principal!=null) {
+			String userid=principal.getName();
+			
+			int likeCheck = likeService.likeCheck(bno, userid);
+				
+			if(likeCheck == 0) {
+				likeService.insertLike(bno, userid); //like테이블 삽입
+				likeService.updateLike(bno);	//게시판테이블 +1
+				likeService.memberPointPlus(userid); //회원포인트 +
+			}
+			else if(likeCheck == 1) {
+				likeService.updateLikeCheckCancel(bno, userid); //like테이블 구분자0
+				likeService.updateLikeCancel(bno); //게시판테이블 - 1
+				likeService.deleteLike(bno, userid); //like테이블 삭제
+				likeService.memberPointDown(userid); //회원포인트 - 
+			}
+			log.info("likeCheck:"+likeCheck);
+			return likeCheck;
+		}
+		else {
+			int likeCheck=9999;
+			return likeCheck;
+		}
+		
+	}
+	
+	// 게시글 싫어요
+	@ResponseBody
+	@PostMapping(value = "/updateHate")
+	public int updateHate(@RequestParam("bno") Long bno, Principal principal) {
+		if(principal!=null) {
+			String userid=principal.getName();
+			
+			int hateCheck=hateService.hateCheck(bno, userid);
+			
+			if(hateCheck==0) {
+				hateService.insertHate(bno, userid);
+				hateService.updateHate(bno);
+				hateService.hatepointPlus(userid);
+			}
+			else if(hateCheck==1) {
+				hateService.updateHateCheckCancel(bno, userid);
+				hateService.updateHateCancel(bno);
+				hateService.deleteHate(bno, userid);
+				hateService.hatePointMinus(userid);
+			}
+			
+			return hateCheck;
+		}
+		else {
+			int hateCheck=9999;
+			return hateCheck;
+		}
 	}
 	
 }

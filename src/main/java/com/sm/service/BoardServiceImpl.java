@@ -40,10 +40,13 @@ public class BoardServiceImpl implements BoardService{
 			attachMapper.insert(attach);
 		});
 	}
-
+	
+	@Transactional
 	@Override
 	public BoardVO getBoard(Long bno) {
 		log.info("getBoard......");
+		
+		mapper.boardViews(bno);
 		return mapper.getBoard(bno);
 	}
 

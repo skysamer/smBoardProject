@@ -35,7 +35,7 @@ import net.coobird.thumbnailator.Thumbnailator;
 @Log4j
 public class UploadController {
 	
-	private String getFolder() {
+	private String getFolder() { /* 년/월/일  폴더 경로 생성 */
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 		
 		Date date=new Date();
@@ -64,15 +64,15 @@ public class UploadController {
 	}
 	
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping(value="/uploadAjaxAction", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value="/uploadAjaxAction", produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<BoardAttachVO>> uploadAjaxPost(MultipartFile[] uploadFile) {
+	public ResponseEntity<List<BoardAttachVO>> uploadAjaxPost(MultipartFile[] uploadFile) {/* 업로드 파일 폴더 저장 및 파일 정보 db저장 */
 		
 		List<BoardAttachVO> list=new ArrayList<BoardAttachVO>();
 		
 		String uploadFolder="C:\\upload";
 		
-		String uploadFolderPath=getFolder();
+		String uploadFolderPath=getFolder();  /* 년/월/일  폴더 경로 생성 */
 		
 		// make folder
 		File uploadPath=new File(uploadFolder, uploadFolderPath);
@@ -83,9 +83,6 @@ public class UploadController {
 		
 		//make yyyy/mm/dd folder
 		for(MultipartFile multipartFile : uploadFile) {
-			log.info("-------------------------------");
-			log.info("Upload File Name: "+multipartFile.getOriginalFilename());
-			log.info("Upload File Size: "+multipartFile.getSize());
 			
 			BoardAttachVO vo=new BoardAttachVO();
 			
@@ -131,10 +128,10 @@ public class UploadController {
 	
 	@GetMapping("/display")
 	@ResponseBody
-	public ResponseEntity<byte[]> getFile(String fileName){
+	public ResponseEntity<byte[]> getFile(String fileName){/*파일 섬네일 보여주기 */
 		log.info("fileName: "+fileName);
 		
-		File file=new File("c:\\upload\\"+fileName);
+		File file=new File("C:\\upload\\"+fileName);
 		
 		log.info("file: "+file);
 		

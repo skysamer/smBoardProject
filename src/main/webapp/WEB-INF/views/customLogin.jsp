@@ -58,6 +58,7 @@
 						</form>
 					</div>
                 </div>
+				<button type="button" onclick="location.href='/signUp'" class="btn btn-lg  btn-block">회원가입</button>
             </div>
         </div>
     </div>

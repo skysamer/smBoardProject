@@ -58,7 +58,7 @@
 <div class="row">
 	<div class="col-lg-12">
 		<h1 class="page-header">
-			<c:out value="${board.title }" />
+			<c:out value="${board.title }" /> 
 		</h1>
 	</div>
 </div>
@@ -69,6 +69,9 @@
 
 			<div class="panel-heading">
 				<label>작성자: </label> <c:out value="${board.writer }" />
+			</div>
+			<div class="form-group">
+				<p align="right">조회수: <c:out value="${board.views }" /></p>
 			</div>
 
 			<div class="panel-body">
@@ -83,7 +86,13 @@
 							<button id="btnDelModal" data-oper="removeModal" class="btn btn-danger">삭제</button>
 						</c:if>
 					</sec:authorize>
-				<button data-oper="list" class="btn btn-info" >목록으로</button>
+				<button data-oper="list" class="btn btn-circle.btn-lg" >목록으로</button>
+				<button name="likeBtn" type="button" class="btn btn-info">
+					추천  <c:out value="${board.likehit }" />
+				</button>
+				<button name="hateBtn" type="button" class="btn btn-danger">
+					비추천  <c:out value="${board.hatehit }" />
+				</button>
 				
 				<form id="operForm" action="/board/modify" method="get">
 					<input type="hidden" id="bno" name="bno" value="<c:out value="${board.bno }"/>">
@@ -155,7 +164,7 @@
 		<!-- 판넬 -->
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<i class="fa fa-comments fa-fw"></i> 전체 댓글
+				<i class="fa fa-comments fa-fw"></i> 전체 댓글<b>[<c:out value="${board.replyCnt }"/>]</b>
 					<sec:authorize access="isAuthenticated()">
 						<button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">댓글 등록</button>
 					</sec:authorize>	
@@ -214,6 +223,8 @@
 
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 
+
+
 <script>
 $(document).ready(function(){
 	(function(){
@@ -244,6 +255,65 @@ $(document).ready(function(){
 			$(".uploadResult ul").html(str);
 		});
 	})();
+	
+	//좋아요 비동기 처리
+		$("button[name='likeBtn']").on("click", function(){
+			
+			var bno="${board.bno}";
+			
+				$.ajax({
+					type : "POST",  
+		            url : "/board/updateLike",       
+		            dataType : "json",   
+		            data : {"bno" : bno},
+		            error : function(request, status, error){
+		            	console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		                alert("통신 에러");
+		            },
+		            success : function(likeCheck) {
+		                
+		                if(likeCheck == 0){
+		                    alert("추천완료");
+		                    location.reload();
+		                }
+		                else if (likeCheck == 1){
+		                    alert("추천취소");
+		                    location.reload();
+		                }
+		                else if(likeCheck==9999){
+		                	alert("로그인 후 이용 가능합니다.");
+		                }
+		            }
+				});
+		});
+	
+	// 싫어요 비동기 처리
+	$("button[name='hateBtn']").on("click", function(){
+		var bno="${board.bno}";
+		
+		$.ajax({
+			type : "POST",
+			url : "/board/updateHate",
+			dataType : "json",
+			data : {"bno" : bno},
+			error : function(){
+				alert("통신 에러");
+			},
+			success : function(hateCheck){
+				if(hateCheck==0){
+					alert("비추천완료");
+					location.reload();
+				}
+				else if(hateCheck==1){
+					alert("비추천취소");
+					location.reload();
+				}
+				else if(hateCheck==9999){
+					alert("로그인 후 이용 가능합니다.");
+				}
+			}
+		});
+	});
 	
 	$(".uploadResult").on("click", "li", function(e){
 		console.log("view image");
@@ -276,6 +346,9 @@ $(document).ready(function(){
 		.html("<img src='/display?fileName="+fileCallPath+"'>")
 		.animate({width:"100%", height:"100%"}, 1000);
 	}
+	
+	var alreadyLikeClick = false;
+	var alreadyHateClick = false;
 	
 	var bnoValue='<c:out value="${board.bno}"/>';
 	var replyUL=$(".chat");

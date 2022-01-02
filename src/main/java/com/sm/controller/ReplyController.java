@@ -43,7 +43,7 @@ public class ReplyController {
 				: new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@GetMapping(value="/pages/{bno}/{page}", produces= {MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@GetMapping(value="/pages/{bno}/{page}", produces= {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<ReplyPageDTO> getList(@PathVariable("page") int page, @PathVariable("bno") Long bno){
 		
 		Criteria cri=new Criteria(page, 10);
@@ -55,7 +55,7 @@ public class ReplyController {
 		return new ResponseEntity<ReplyPageDTO>(service.getListPage(cri, bno), HttpStatus.OK);
 	}
 	
-	@GetMapping(value="/{rno}", produces= {MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@GetMapping(value="/{rno}", produces= {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<ReplyVO> get(@PathVariable("rno") Long rno){
 		log.info("get: "+rno);
 		

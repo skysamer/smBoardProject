@@ -47,8 +47,8 @@
 							<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"
 									value="${board.regdate }" /></td>
 							<td><c:out value="${board.views }" /></td>
-							<td><c:out value="${board.recommendations }" /></td>
-							<td><c:out value="${board.not_recommendations }" /></td>
+							<td><c:out value="${board.likehit }" /></td>
+							<td><c:out value="${board.hatehit }" /></td>
 						</tr>
 					</c:forEach>
 				</table>
