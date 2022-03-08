@@ -25,7 +25,7 @@
 </br>
 
 ## 3. ERD 설계
-<img width="769" src="https://user-images.githubusercontent.com/73572543/143258430-08d7d0c0-570e-4abc-b432-910fb017b65a.png">
+<img width="934" alt="erd 수정" src="https://user-images.githubusercontent.com/73572543/157173187-bb06608a-245f-4875-bc9a-6bb2cd5ba2bb.png">
 
 ## 4. 전체 흐름
 <img width="831" src="https://user-images.githubusercontent.com/73572543/142586025-0e310172-7256-44ee-b79e-a4e1cd43c2e1.png">
@@ -419,16 +419,10 @@
 
 </br>
 
-## 11. 트러블 슈팅
-<details>
-<summary></summary>
-<div markdown="1">
-
-- 
+## 10. 로그인 처리
 
 </div>
 </details>
-
 
 </br>
 
