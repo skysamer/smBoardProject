@@ -25,10 +25,8 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @AllArgsConstructor
 public class ReplyController {
-	
 	@Autowired
 	private ReplyService service;
-	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value="/new", consumes="application/json", produces= {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> create(@RequestBody ReplyVO vo){

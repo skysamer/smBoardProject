@@ -40,7 +40,7 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>${org.aspectj-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
@@ -54,6 +54,12 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.4.2</version>
+		</dependency>
+		
 		<!-- lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -61,6 +67,7 @@
 			<version>1.18.20</version>
 			<scope>provided</scope>
 		</dependency>
+
 
 		<!-- HikariCP -->
 		<dependency>
@@ -111,7 +118,7 @@
 			<artifactId>log4jdbc-log4j2-jdbc4</artifactId>
 			<version>1.16</version>
 		</dependency>
-		
+
 		<!-- jackson -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -119,31 +126,33 @@
 			<version>2.9.6</version>
 		</dependency>
 		
+		
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>2.9.6</version>
 		</dependency>
-		
+
 		<!-- gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.8.2</version>
 		</dependency>
-		
+
 		<!-- thumbnail -->
 		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
 			<version>0.4.10</version>
 		</dependency>
-		
+
 		<!-- fileTypeCheck -->
 		<dependency>
-	   		<groupId>org.apache.tika</groupId>
-	    	<artifactId>tika-parsers</artifactId>
-	    	<version>1.18</version>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-parsers</artifactId>
+			<version>1.18</version>
 		</dependency>
 
 		<!-- Quartz -->
@@ -152,32 +161,32 @@
 			<artifactId>quartz</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz-jobs</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-		
+
 		<!-- Security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
 			<version>5.0.6.RELEASE</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 			<version>5.0.6.RELEASE</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 			<version>5.0.6.RELEASE</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
@@ -203,7 +212,7 @@
 			<version>${org.slf4j-version}</version>
 			<scope>runtime</scope>
 		</dependency>
-		
+
 		<!-- log4j -->
 		<dependency>
 			<groupId>log4j</groupId>
@@ -240,7 +249,7 @@
 	</dependencies>
 	<build>
 		<plugins>
-		
+
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.9</version>
@@ -255,7 +264,7 @@
 					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -268,7 +277,7 @@
 					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -277,7 +286,7 @@
 					<mainClass>org.test.int1.Main</mainClass>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 </project>

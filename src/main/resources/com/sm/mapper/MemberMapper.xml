@@ -9,7 +9,7 @@
 		
 		<result property="userid" column="userid"/>
 		<result property="userpw" column="userpw"/>
-		<result property="userName" column="username"/>
+		<result property="username" column="username"/>
 		<result property="regDate" column="regdate"/>
 		<collection property="authList" resultMap="authMap">
 		</collection>
@@ -27,4 +27,21 @@
 		tbl_member mem LEFT OUTER JOIN tbl_member_auth auth ON mem.userid=auth.userid
 		WHERE mem.userid=#{userid}
 	</select>
+	
+	<insert id="insertMember">
+		insert into tbl_member(userid, username, userpw, email, phone, address, address2, sex)
+		values(#{userid}, #{username}, #{userpw}, #{email}, #{phone}, #{address}, #{address2}, #{sex})
+	</insert>
+	
+	<insert id="insertAuth">
+		insert into tbl_member_auth(userid, auth)
+		values(#{userid}, 'ROLE_USER')
+	</insert>
+	
+	<select id="userIdCheck" resultType="int">
+		select count(*)
+		from tbl_member
+		where userid=#{userid}
+	</select>
+	
 </mapper>

@@ -52,13 +52,13 @@
 								</div>
 								
 								<a href="index.html" class="btn btn-lg btn-success btn-block">로그인</a>
+								<button type="button" onclick="location.href='signUp'" class="btn btn-lg btn-block">회원가입</button>
 							</fieldset>
 							
 							<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"/>
 						</form>
 					</div>
                 </div>
-				<button type="button" onclick="location.href='/signUp'" class="btn btn-lg  btn-block">회원가입</button>
             </div>
         </div>
     </div>
